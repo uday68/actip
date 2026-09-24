@@ -29,6 +29,10 @@ interface CTIState {
   isNotificationsOpen: boolean;
   setNotificationsOpen: (open: boolean) => void;
 
+  theme: 'light' | 'dark';
+  setTheme: (theme: 'light' | 'dark') => void;
+  toggleTheme: () => void;
+
   analystProfile: {
     name: string;
     role: string;
@@ -38,6 +42,21 @@ interface CTIState {
 }
 
 export const useCTIStore = create<CTIState>((set, get) => ({
+  theme: 'light',
+  setTheme: (theme: 'light' | 'dark') => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('actip_theme', theme);
+    }
+    set({ theme });
+  },
+  toggleTheme: () => {
+    const next = get().theme === 'light' ? 'dark' : 'light';
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('actip_theme', next);
+    }
+    set({ theme: next });
+  },
+
   demoModeNotice: true, // Live CTI notification banner
   dismissDemoNotice: () => set({ demoModeNotice: false }),
 
