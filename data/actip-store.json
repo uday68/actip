@@ -1,0 +1,4247 @@
+{
+  "investigations": {
+    "INV-2026-0842": {
+      "id": "INV-2026-0842",
+      "query": "185.220.101.5, quantum-defense.org, CVE-2026-8912",
+      "type": "hybrid",
+      "status": "completed",
+      "confidence": "high",
+      "confidenceScore": 89,
+      "updatedAt": "5 min ago",
+      "createdAt": "2026-09-16 11:42:10 UTC",
+      "analyst": "Tier-3 Threat Intel Team",
+      "executiveSummary": "High-confidence malicious infrastructure identified. The primary indicator 185.220.101.5 operates as a dual-role Command-and-Control (C2) and staging node for BlackVenom RAT. Passive DNS correlations reveal active resolution to quantum-defense.org (spoofed defense contractor domain) hosting weaponized payload CVE-2026-8912 exploits. Attribution correlates with 91% confidence to threat group APT-84 (RedBanshee / Cobalt Frost) under Operation Arctic Ghost targeting aerospace and energy sectors.",
+      "evidenceStrength": "Strong",
+      "lastObserved": "2026-09-15 22:14:00 UTC",
+      "sourcesCount": 9,
+      "keyFindings": [
+        "IP 185.220.101.5 identified as active C2 server communicating with BlackVenom RAT v3.2 beacons via HTTPS over port 8443.",
+        "Domain quantum-defense.org registered via Njalla privacy shield; passive DNS historical overlap shows co-location with known APT-84 staging clusters.",
+        "Zero-day vulnerability CVE-2026-8912 (Edge Gateway RCE) actively weaponized for initial boundary penetration.",
+        "6 independent intelligence feeds verify attribution; 1 source flags possible infrastructure leasing to sub-contractor proxy farm (reviewed & resolved).",
+        "3 MITRE ATT&CK techniques confirmed in internal telemetry logs matching active beacon patterns."
+      ],
+      "attackTechniques": [
+        "T1190",
+        "T1059.001",
+        "T1071.001",
+        "T1566.002",
+        "T1027.002",
+        "T1083"
+      ],
+      "claims": [
+        {
+          "id": "claim-1",
+          "claimText": "IP 185.220.101.5 acts as Command & Control (C2) node for BlackVenom RAT v3.2",
+          "provenanceType": "source_fact",
+          "strengthPercentage": 94,
+          "supportingCount": 5,
+          "contradictionCount": 0,
+          "supportingEvidence": [
+            {
+              "id": "ev-101",
+              "sourceName": "CERT-EU Threat Advisory #26-081",
+              "sourceType": "CERT Advisory",
+              "publishedDate": "2026-08-28",
+              "observedDate": "2026-08-27",
+              "relationship": "IP 185.220.101.5 → BlackVenom C2 listener on TLS/8443",
+              "url": "https://cert.europa.eu/advisories/2026-081",
+              "excerpt": "Observed TLS certificate fingerprint matching BlackVenom default beacon self-signed cert on 185.220.101.5.",
+              "reliabilityScore": 95,
+              "tlp": "WHITE"
+            },
+            {
+              "id": "ev-102",
+              "sourceName": "MISP Threat Exchange Community",
+              "sourceType": "MISP Instance",
+              "publishedDate": "2026-09-02",
+              "observedDate": "2026-09-01",
+              "relationship": "Attribute: ip-dst 185.220.101.5 tagged #BlackVenom #APT84",
+              "excerpt": "Corroborated by 3 participating financial and aerospace SOCs reporting outbound beacons from isolated workstations.",
+              "reliabilityScore": 90,
+              "tlp": "GREEN"
+            },
+            {
+              "id": "ev-103",
+              "sourceName": "Sandbox Detonation Cluster #4",
+              "sourceType": "Sandbox Execution",
+              "publishedDate": "2026-09-12",
+              "observedDate": "2026-09-12",
+              "relationship": "Payload hash sha256:7f9a... connected to 185.220.101.5:8443",
+              "excerpt": "Dynamic behavioral analysis confirmed encrypted handshake with JARM hash 27d36d2d000d000dc427d36d2d000d matching BlackVenom C2 profile.",
+              "reliabilityScore": 98,
+              "tlp": "AMBER"
+            }
+          ]
+        },
+        {
+          "id": "claim-2",
+          "claimText": "Domain quantum-defense.org belongs to Operation Arctic Ghost campaign infrastructure",
+          "provenanceType": "ai_interpretation",
+          "strengthPercentage": 86,
+          "supportingCount": 4,
+          "contradictionCount": 1,
+          "supportingEvidence": [
+            {
+              "id": "ev-201",
+              "sourceName": "AlienVault OTX Pulse: Arctic Ghost Infrastructure",
+              "sourceType": "Commercial Feed",
+              "publishedDate": "2026-09-08",
+              "observedDate": "2026-09-07",
+              "relationship": "Domain quantum-defense.org resolved to 185.220.101.5 (2026-09-01 to 2026-09-15)",
+              "excerpt": "Passive DNS pivot confirmed registration pattern matches prior APT-84 spearphishing domain registration cadence.",
+              "reliabilityScore": 88,
+              "tlp": "WHITE"
+            },
+            {
+              "id": "ev-202",
+              "sourceName": "VirusTotal Graph Enterprise Intelligence",
+              "sourceType": "Commercial Feed",
+              "publishedDate": "2026-09-14",
+              "observedDate": "2026-09-13",
+              "relationship": "Domain hosting weaponized LNK lure and PDF decoy documents",
+              "excerpt": "7 engines flagged domain as malicious phishing host masquerading as Quantum Defense Systems procurement portal.",
+              "reliabilityScore": 92,
+              "tlp": "GREEN"
+            }
+          ],
+          "contradictoryEvidence": [
+            {
+              "id": "contra-1",
+              "sourceName": "CrowdSensor Threat Feed #CS-994",
+              "observedDate": "2026-09-04",
+              "dissentingClaim": "Attributed infrastructure cluster to commercial proxy operator \"SilverFox Leasing\"",
+              "reason": "ASN 49870 contains shared VPS hosting providers used by both cybercrime syndicates and state actors. Analyst review determined APT-84 rented space within this VPS subnet.",
+              "severity": "medium",
+              "resolved": true
+            }
+          ],
+          "analystNote": "Resolved by Lead Analyst: Infrastructure overlap is consistent with APT-84 tactical tradecraft of leasing legitimate VPS commercial IP blocks to evade geographic blocking."
+        },
+        {
+          "id": "claim-3",
+          "claimText": "CVE-2026-8912 is weaponized for perimeter foothold prior to BlackVenom execution",
+          "provenanceType": "source_fact",
+          "strengthPercentage": 92,
+          "supportingCount": 3,
+          "contradictionCount": 0,
+          "supportingEvidence": [
+            {
+              "id": "ev-301",
+              "sourceName": "CISA Known Exploited Vulnerabilities (KEV) Catalog",
+              "sourceType": "CERT Advisory",
+              "publishedDate": "2026-09-05",
+              "observedDate": "2026-09-03",
+              "relationship": "CVE-2026-8912 added to KEV catalog with ransomware & espionage exploitation tags",
+              "excerpt": "Zero-day vulnerability in Edge Gateway firmware enabling unauthenticated remote code execution. Mandatory federal patch order issued.",
+              "reliabilityScore": 99,
+              "tlp": "WHITE"
+            },
+            {
+              "id": "ev-302",
+              "sourceName": "Internal Perimeter Firewall & EDR Telemetry",
+              "sourceType": "Internal Telemetry",
+              "publishedDate": "2026-09-15",
+              "observedDate": "2026-09-15",
+              "relationship": "Blocked inbound exploit POST requests originating from 185.220.101.5 targeting /api/v2/vpn/tunnel",
+              "excerpt": "Signature ACTIP-SIG-8912 triggered 14 times against external DMZ cluster.",
+              "reliabilityScore": 100,
+              "tlp": "RED"
+            }
+          ]
+        }
+      ],
+      "relatedEntities": [
+        {
+          "type": "actor",
+          "label": "APT-84 (RedBanshee)",
+          "relation": "attributed_to",
+          "confidence": 91,
+          "severity": "critical"
+        },
+        {
+          "type": "malware",
+          "label": "BlackVenom RAT v3.2",
+          "relation": "uses",
+          "confidence": 96,
+          "severity": "critical"
+        },
+        {
+          "type": "campaign",
+          "label": "Operation Arctic Ghost",
+          "relation": "associated_with",
+          "confidence": 88,
+          "severity": "high"
+        },
+        {
+          "type": "cve",
+          "label": "CVE-2026-8912",
+          "relation": "exploits",
+          "confidence": 94,
+          "severity": "critical"
+        },
+        {
+          "type": "domain",
+          "label": "quantum-defense.org",
+          "relation": "resolves_to",
+          "confidence": 98,
+          "severity": "high"
+        },
+        {
+          "type": "ip",
+          "label": "185.220.101.5",
+          "relation": "controls",
+          "confidence": 95,
+          "severity": "critical"
+        },
+        {
+          "type": "technique",
+          "label": "T1190 Exploit Public-Facing App",
+          "relation": "uses",
+          "confidence": 95,
+          "severity": "high"
+        },
+        {
+          "type": "technique",
+          "label": "T1071.001 Web Protocols",
+          "relation": "uses",
+          "confidence": 92,
+          "severity": "medium"
+        }
+      ],
+      "stages": [
+        {
+          "id": "stage-1",
+          "name": "Entity Disambiguation & Normalization",
+          "description": "Parse raw input indicators into canonical STIX 2.1 cyber observable objects.",
+          "status": "completed",
+          "toolName": "EntityNormalizer",
+          "query": "185.220.101.5, quantum-defense.org, CVE-2026-8912",
+          "resultSummary": "3 valid observables recognized: 1 IPv4, 1 FQDN, 1 CVE Identifier.",
+          "evidenceCount": 3,
+          "durationMs": 140,
+          "substeps": [
+            "IPv4 parsed and RFC1918 checked (Public routable)",
+            "Domain FQDN canonicalized and Punycode verified",
+            "CVE validated against NVD schema v5"
+          ],
+          "findings": [
+            {
+              "title": "Primary IP",
+              "value": "185.220.101.5",
+              "badge": "Public Routable"
+            },
+            {
+              "title": "FQDN",
+              "value": "quantum-defense.org",
+              "badge": "Active Resolution"
+            },
+            {
+              "title": "CVE",
+              "value": "CVE-2026-8912",
+              "badge": "CVSS 9.8"
+            }
+          ]
+        },
+        {
+          "id": "stage-2",
+          "name": "IOC Enrichment (Passive DNS & WHOIS)",
+          "description": "Query passive DNS repositories, WHOIS ownership history, and BGP AS routing.",
+          "status": "completed",
+          "toolName": "PassiveDnsIntelligence",
+          "query": "185.220.101.5 & quantum-defense.org",
+          "resultSummary": "Found 7 co-hosted domains, ASN 49870 (Solaris Hosting), registration via Njalla privacy shield.",
+          "evidenceCount": 4,
+          "durationMs": 380,
+          "substeps": [
+            "BGP Routing: AS49870 (Solaris Networks BV, Netherlands)",
+            "Passive DNS: 7 historical hostnames identified",
+            "SSL Cert: Self-signed certificate issued to *.quantum-defense.org"
+          ],
+          "findings": [
+            {
+              "title": "ASN / Org",
+              "value": "AS49870 Solaris Networks BV",
+              "badge": "Netherlands"
+            },
+            {
+              "title": "Historical Domains",
+              "value": "7 related hostnames",
+              "badge": "High Overlap"
+            },
+            {
+              "title": "JARM Fingerprint",
+              "value": "27d36d2d000d000dc427d36d2d000d",
+              "badge": "C2 Match"
+            }
+          ]
+        },
+        {
+          "id": "stage-3",
+          "name": "Commercial & Community Threat Feeds",
+          "description": "Cross-reference indicators against MISP, AlienVault OTX, VirusTotal, and CERT bulletins.",
+          "status": "completed",
+          "toolName": "ThreatFeedAggregator",
+          "query": "185.220.101.5 & quantum-defense.org",
+          "resultSummary": "14 matching threat intelligence reports retrieved from 5 distinct feeds.",
+          "evidenceCount": 14,
+          "durationMs": 620,
+          "substeps": [
+            "MISP: Attribute matched event #8410",
+            "AlienVault: 4 pulses matched (Arctic Ghost tag)",
+            "VirusTotal: 34/72 engines malicious"
+          ],
+          "findings": [
+            {
+              "title": "Threat Pulses",
+              "value": "4 AlienVault Pulses",
+              "badge": "Active"
+            },
+            {
+              "title": "MISP Events",
+              "value": "Event #8410 (Aerospace Targeting)",
+              "badge": "Verified"
+            },
+            {
+              "title": "Reputation Score",
+              "value": "94/100 Malicious",
+              "badge": "Critical"
+            }
+          ]
+        },
+        {
+          "id": "stage-4",
+          "name": "MITRE ATT&CK Correlation",
+          "description": "Map observed telemetry and infrastructure characteristics to ATT&CK tactics and techniques.",
+          "status": "completed",
+          "toolName": "AttackMatrixCorrelator",
+          "query": "Observed traffic patterns, beacon headers & exploit signatures",
+          "resultSummary": "6 ATT&CK techniques correlated with >85% confidence score.",
+          "evidenceCount": 6,
+          "durationMs": 410,
+          "substeps": [
+            "Initial Access: T1190 (Exploit Public-Facing Application)",
+            "Execution: T1059.001 (PowerShell Scripting)",
+            "Command & Control: T1071.001 (Web Protocols HTTPS)"
+          ],
+          "findings": [
+            {
+              "title": "Initial Access",
+              "value": "T1190 Exploit Public-Facing App",
+              "badge": "CVE-2026-8912"
+            },
+            {
+              "title": "Command & Control",
+              "value": "T1071.001 HTTPS Beaconing",
+              "badge": "Port 8443"
+            },
+            {
+              "title": "Defense Evasion",
+              "value": "T1027.002 Software Packing",
+              "badge": "BlackVenom"
+            }
+          ]
+        },
+        {
+          "id": "stage-5",
+          "name": "Infrastructure Analysis & Pivot Expansion",
+          "description": "Graph traversal across co-located IPs, shared TLS certs, and SSH keys.",
+          "status": "completed",
+          "toolName": "GraphInfrastructureExpander",
+          "query": "Nodes related to 185.220.101.5 within 2 hops",
+          "resultSummary": "Expanded graph to 18 nodes and 24 validated edges. Discovered 2 secondary staging IPs.",
+          "evidenceCount": 8,
+          "durationMs": 510,
+          "substeps": [
+            "Pivot on TLS Certificate Serial #4A91B8820",
+            "Discovered secondary IP 185.220.101.19",
+            "Correlated with quantum-defense.org subdomains"
+          ],
+          "findings": [
+            {
+              "title": "Secondary C2",
+              "value": "185.220.101.19",
+              "badge": "Staging Server"
+            },
+            {
+              "title": "Shared TLS Serial",
+              "value": "4A91B8820",
+              "badge": "Identical Keypair"
+            },
+            {
+              "title": "Graph Expansion",
+              "value": "18 entities connected",
+              "badge": "Cluster Identified"
+            }
+          ]
+        },
+        {
+          "id": "stage-6",
+          "name": "Malware Family Signature Correlation",
+          "description": "Compare beaconing payload headers and binary hashes against YARA & static rules.",
+          "status": "completed",
+          "toolName": "MalwareSignatureEngine",
+          "query": "Payload SHA256: 7f9a2e88c014... & TLS Handshake JARM",
+          "resultSummary": "Confirmed match with BlackVenom RAT v3.2. Payload contains encrypted reverse shell module.",
+          "evidenceCount": 5,
+          "durationMs": 460,
+          "substeps": [
+            "YARA match: RULE_APT84_BLACKVENOM_LOADER_V3",
+            "Imphash match with known 2026 samples",
+            "Configuration extraction succeeded: C2 list parsed"
+          ],
+          "findings": [
+            {
+              "title": "Malware Family",
+              "value": "BlackVenom RAT v3.2",
+              "badge": "Espionage RAT"
+            },
+            {
+              "title": "YARA Match",
+              "value": "RULE_APT84_BLACKVENOM",
+              "badge": "100% Match"
+            },
+            {
+              "title": "Extracted Config",
+              "value": "Fallbacks: 185.220.101.19",
+              "badge": "Decrypted"
+            }
+          ]
+        },
+        {
+          "id": "stage-7",
+          "name": "Threat Actor Attribution Analysis",
+          "description": "Hypothesis testing and attribution scoring against known APT threat actor profiles.",
+          "status": "completed",
+          "toolName": "AttributionEngine",
+          "query": "Cluster signature, TTP overlap, victimology",
+          "resultSummary": "Primary attribution: APT-84 (RedBanshee / Cobalt Frost) with 91% confidence.",
+          "evidenceCount": 7,
+          "durationMs": 590,
+          "substeps": [
+            "Victimology match: Aerospace & Defense contractors in Western Europe",
+            "Tooling overlap: BlackVenom RAT is proprietary to APT-84",
+            "Working hours alignment: UTC+3 to UTC+5"
+          ],
+          "findings": [
+            {
+              "title": "Attributed Group",
+              "value": "APT-84 (RedBanshee)",
+              "badge": "91% Confidence"
+            },
+            {
+              "title": "Known Campaign",
+              "value": "Operation Arctic Ghost",
+              "badge": "Targeted Espionage"
+            },
+            {
+              "title": "Target Sector",
+              "value": "Defense & Aerospace",
+              "badge": "Critical Sector"
+            }
+          ]
+        },
+        {
+          "id": "stage-8",
+          "name": "Evidence Provenance & Contradiction Verification",
+          "description": "Trace claims to primary sources, evaluate reliability weights, and flag dissenting reports.",
+          "status": "completed",
+          "toolName": "EvidenceVerifier",
+          "query": "Claims provenance check across 9 ingested sources",
+          "resultSummary": "Verified 3 core claims. Detected 1 minor contradiction regarding proxy infrastructure (reviewed & resolved).",
+          "evidenceCount": 9,
+          "durationMs": 340,
+          "substeps": [
+            "Provenance tracking: all 3 claims linked to immutable source IDs",
+            "Reliability weighted average: 93.4%",
+            "Contradiction flagged: CrowdSensor report #CS-994"
+          ],
+          "findings": [
+            {
+              "title": "Verified Claims",
+              "value": "3 Major Findings",
+              "badge": "Traceable"
+            },
+            {
+              "title": "Dissenting Sources",
+              "value": "1 Resolved Flag",
+              "badge": "Reviewed"
+            },
+            {
+              "title": "Mean Reliability",
+              "value": "93.4%",
+              "badge": "High Provenance"
+            }
+          ]
+        },
+        {
+          "id": "stage-9",
+          "name": "Final Assessment & Action Guidance",
+          "description": "Synthesize evidence-grounded intelligence assessment and actionable containment recommendations.",
+          "status": "completed",
+          "toolName": "ExecutiveSynthesizer",
+          "query": "Generate executive summary and mitigation priorities",
+          "resultSummary": "Assessment completed. Formatted into executive dossier with STIX 2.1 export bundle.",
+          "evidenceCount": 4,
+          "durationMs": 220,
+          "substeps": [
+            "Emergency blocklist generated for perimeter firewalls",
+            "YARA hunting rules published to EDR agents",
+            "Incident response playbook trigger prepared"
+          ],
+          "findings": [
+            {
+              "title": "Severity Rating",
+              "value": "Critical (Severity 5)",
+              "badge": "Immediate Action"
+            },
+            {
+              "title": "Containment State",
+              "value": "Egress Block Recommended",
+              "badge": "Priority 1"
+            },
+            {
+              "title": "Export Package",
+              "value": "STIX 2.1 Bundle Ready",
+              "badge": "Exportable"
+            }
+          ]
+        }
+      ],
+      "agentTraces": [
+        {
+          "id": "tr-1",
+          "timestamp": "11:42:10",
+          "level": "info",
+          "action": "Received investigation dispatch for targets: 185.220.101.5, quantum-defense.org, CVE-2026-8912",
+          "tool": "Dispatcher"
+        },
+        {
+          "id": "tr-2",
+          "timestamp": "11:42:11",
+          "level": "tool_call",
+          "action": "Executing Passive DNS and WHOIS query for 185.220.101.5",
+          "tool": "PassiveDnsIntelligence",
+          "target": "185.220.101.5",
+          "recordsCount": 7
+        },
+        {
+          "id": "tr-3",
+          "timestamp": "11:42:11",
+          "level": "tool_call",
+          "action": "Querying MISP & AlienVault threat feeds for indicator overlaps",
+          "tool": "ThreatFeedAggregator",
+          "recordsCount": 14
+        },
+        {
+          "id": "tr-4",
+          "timestamp": "11:42:12",
+          "level": "correlation",
+          "action": "Extracted 18 related entities across 2 degrees of separation",
+          "tool": "GraphEngine",
+          "recordsCount": 18
+        },
+        {
+          "id": "tr-5",
+          "timestamp": "11:42:12",
+          "level": "tool_call",
+          "action": "Evaluating TLS fingerprint JARM and payload hashes against YARA repository",
+          "tool": "MalwareSignatureEngine",
+          "target": "BlackVenom RAT v3.2"
+        },
+        {
+          "id": "tr-6",
+          "timestamp": "11:42:13",
+          "level": "conflict",
+          "action": "Detected conflicting attribution in source CS-994 (SilverFox Leasing proxy vs APT-84)",
+          "tool": "EvidenceVerifier",
+          "details": "Automated hypothesis check: ISP ASN 49870 is commercial VPS utilized by APT-84. Resolving contradiction."
+        },
+        {
+          "id": "tr-7",
+          "timestamp": "11:42:13",
+          "level": "verification",
+          "action": "Mapped 6 MITRE ATT&CK techniques with verified internal DMZ firewall telemetry logs",
+          "tool": "AttackMatrixCorrelator"
+        },
+        {
+          "id": "tr-8",
+          "timestamp": "11:42:14",
+          "level": "completed",
+          "action": "Generated final evidence-grounded assessment and executive intelligence brief",
+          "tool": "ExecutiveSynthesizer"
+        }
+      ],
+      "recommendedActions": [
+        "Emergency perimeter firewall block on IPv4 range 185.220.101.0/24 (Solaris Networks BV).",
+        "Sinkhole DNS resolution for domain quantum-defense.org and all associated subdomains.",
+        "Immediately patch Edge Gateway firmware to mitigate CVE-2026-8912 per CISA Emergency Directive.",
+        "Deploy YARA rule APT84_BLACKVENOM_LOADER across all endpoints and sweep memory buffers for JARM 27d36d2d000d000dc427d36d2d000d.",
+        "Initiate retroactive hunting on SIEM for TLS handshakes to port 8443 dating back to 2026-08-01."
+      ]
+    },
+    "INV-2026-3250": {
+      "id": "INV-2026-3250",
+      "query": "185.220.101.5, quantum-defense.org, CVE-2026-8912",
+      "type": "hybrid",
+      "status": "completed",
+      "confidence": "high",
+      "confidenceScore": 89,
+      "updatedAt": "Just now",
+      "createdAt": "2026-09-24 16:22:04 UTC",
+      "analyst": "Tier-3 Threat Intel Lead",
+      "executiveSummary": "High-confidence malicious infrastructure identified. The primary indicator 185.220.101.5 operates as a dual-role Command-and-Control (C2) and staging node for BlackVenom RAT. DNS correlations reveal active resolution to quantum-defense.org hosting weaponized CVE-2026-8912 exploits. Attribution correlates with 91% confidence to state-sponsored threat group APT-84 (RedBanshee / Cobalt Frost) under Operation Arctic Ghost targeting aerospace and energy defense contractors.",
+      "evidenceStrength": "Strong",
+      "lastObserved": "2026-09-24 16:22:04 UTC",
+      "sourcesCount": 9,
+      "keyFindings": [
+        "IP 185.220.101.5 identified as active C2 server communicating with BlackVenom RAT beacons via HTTPS over port 8443.",
+        "Domain quantum-defense.org registered via privacy shield; historical DNS overlaps with known APT-84 clusters.",
+        "Vulnerability CVE-2026-8912 weaponized for boundary foothold prior to execution.",
+        "1 conflicting attribution hypothesis (proxy leasing) investigated and reconciled: APT-84 utilized Solaris Networks VPS subnets as operational forward relays.",
+        "6 MITRE ATT&CK techniques confirmed in internal perimeter telemetry matching active beacon intervals."
+      ],
+      "claims": [
+        {
+          "id": "claim-1",
+          "claimText": "IP 185.220.101.5 acts as active Command & Control (C2) node for BlackVenom RAT v3.2",
+          "provenanceType": "source_fact",
+          "strengthPercentage": 94,
+          "supportingCount": 5,
+          "contradictionCount": 0,
+          "supportingEvidence": [
+            {
+              "id": "ev-101",
+              "sourceName": "CERT-EU Threat Advisory #26-081",
+              "sourceType": "CERT Advisory",
+              "publishedDate": "2026-08-28",
+              "observedDate": "2026-08-27",
+              "relationship": "IP 185.220.101.5 → BlackVenom C2 listener on TLS/8443",
+              "excerpt": "Observed TLS certificate fingerprint matching BlackVenom default beacon self-signed cert on 185.220.101.5.",
+              "reliabilityScore": 95,
+              "tlp": "WHITE"
+            },
+            {
+              "id": "ev-102",
+              "sourceName": "ThreatFox Open CTI Exchange",
+              "sourceType": "OSINT Feed",
+              "publishedDate": "2026-09-02",
+              "observedDate": "2026-09-01",
+              "relationship": "Attribute: ip-dst 185.220.101.5 tagged #BlackVenom #APT84",
+              "excerpt": "Corroborated by reporting participating SOCs observing outbound beacons from isolated workstations.",
+              "reliabilityScore": 92,
+              "tlp": "GREEN"
+            }
+          ]
+        },
+        {
+          "id": "claim-2",
+          "claimText": "Domain quantum-defense.org belongs to Operation Arctic Ghost campaign infrastructure",
+          "provenanceType": "ai_interpretation",
+          "strengthPercentage": 86,
+          "supportingCount": 4,
+          "contradictionCount": 1,
+          "supportingEvidence": [
+            {
+              "id": "ev-201",
+              "sourceName": "AlienVault OTX Pulse: Arctic Ghost Infrastructure",
+              "sourceType": "Commercial Feed",
+              "publishedDate": "2026-09-08",
+              "observedDate": "2026-09-07",
+              "relationship": "Domain quantum-defense.org resolved to 185.220.101.5",
+              "excerpt": "Passive DNS pivot confirmed registration pattern matches prior APT-84 spearphishing domain registration cadence.",
+              "reliabilityScore": 88,
+              "tlp": "WHITE"
+            }
+          ],
+          "contradictoryEvidence": [
+            {
+              "id": "contra-1",
+              "sourceName": "CrowdSensor Threat Feed #CS-994",
+              "observedDate": "2026-09-04",
+              "dissentingClaim": "Attributed infrastructure cluster to commercial proxy operator \"SilverFox Leasing\"",
+              "reason": "ASN AS49870 (Solaris Networks BV) contains shared VPS hosting providers used by both cybercrime syndicates and state actors. Analyst review determined APT-84 rented space within this VPS subnet.",
+              "severity": "medium",
+              "resolved": true
+            }
+          ],
+          "analystNote": "Resolved: Infrastructure overlap is consistent with APT-84 tradecraft of leasing legitimate VPS commercial IP blocks to evade geographic blocking."
+        },
+        {
+          "id": "claim-3",
+          "claimText": "CVE-2026-8912 is actively weaponized for boundary access prior to payload execution",
+          "provenanceType": "source_fact",
+          "strengthPercentage": 92,
+          "supportingCount": 3,
+          "contradictionCount": 0,
+          "supportingEvidence": [
+            {
+              "id": "ev-301",
+              "sourceName": "CISA Known Exploited Vulnerabilities (KEV) Catalog",
+              "sourceType": "CERT Advisory",
+              "publishedDate": "2026-09-05",
+              "observedDate": "2026-09-05",
+              "relationship": "CVE-2026-8912 listed in CISA KEV catalog",
+              "excerpt": "Improper input neutralization on HTTP management endpoint on port 8443 enables remote code execution.",
+              "reliabilityScore": 99,
+              "tlp": "WHITE"
+            }
+          ]
+        }
+      ],
+      "relatedEntities": [
+        {
+          "type": "actor",
+          "label": "APT-84 (RedBanshee)",
+          "relation": "attributed_to",
+          "confidence": 91,
+          "severity": "critical"
+        },
+        {
+          "type": "malware",
+          "label": "BlackVenom RAT v3.2",
+          "relation": "uses",
+          "confidence": 96,
+          "severity": "critical"
+        },
+        {
+          "type": "campaign",
+          "label": "Operation Arctic Ghost",
+          "relation": "associated_with",
+          "confidence": 88,
+          "severity": "high"
+        },
+        {
+          "type": "cve",
+          "label": "CVE-2026-8912",
+          "relation": "exploits",
+          "confidence": 94,
+          "severity": "critical"
+        },
+        {
+          "type": "domain",
+          "label": "quantum-defense.org",
+          "relation": "resolves_to",
+          "confidence": 98,
+          "severity": "high"
+        },
+        {
+          "type": "ip",
+          "label": "185.220.101.5",
+          "relation": "controls",
+          "confidence": 95,
+          "severity": "critical"
+        },
+        {
+          "type": "technique",
+          "label": "T1190 Exploit Public-Facing App",
+          "relation": "uses",
+          "confidence": 95,
+          "severity": "high"
+        },
+        {
+          "type": "technique",
+          "label": "T1071.001 Web Protocols",
+          "relation": "uses",
+          "confidence": 92,
+          "severity": "medium"
+        }
+      ],
+      "attackTechniques": [
+        "T1190",
+        "T1071.001",
+        "T1059.001",
+        "T1055.012",
+        "T1027.002"
+      ],
+      "stages": [
+        {
+          "id": "stage-1",
+          "name": "Entity Disambiguation & Normalization",
+          "description": "Parse raw input indicators into canonical STIX 2.1 cyber observable objects.",
+          "status": "completed",
+          "toolName": "EntityNormalizer",
+          "query": "185.220.101.5, quantum-defense.org, CVE-2026-8912",
+          "resultSummary": "3 observables parsed and categorized into canonical schemas.",
+          "evidenceCount": 3,
+          "durationMs": 1,
+          "substeps": [
+            "Validated observable format: 185.220.101.5 (ip)",
+            "Validated observable format: quantum-defense.org (domain)",
+            "Validated observable format: CVE-2026-8912 (cve)"
+          ],
+          "findings": [
+            {
+              "title": "IP",
+              "value": "185.220.101.5",
+              "badge": "IPv4 Observable"
+            },
+            {
+              "title": "DOMAIN",
+              "value": "quantum-defense.org",
+              "badge": "Domain FQDN"
+            },
+            {
+              "title": "CVE",
+              "value": "CVE-2026-8912",
+              "badge": "Vulnerability"
+            }
+          ]
+        },
+        {
+          "id": "stage-2",
+          "name": "IOC Enrichment (Passive DNS & WHOIS)",
+          "description": "Query passive DNS repositories, WHOIS ownership history, and BGP AS routing.",
+          "status": "completed",
+          "toolName": "PassiveDnsIntelligence",
+          "query": "185.220.101.5 & quantum-defense.org",
+          "resultSummary": "Resolved 3 active DNS records. Routed through AS49870 (Solaris Networks BV) (Netherlands (NL)).",
+          "evidenceCount": 5,
+          "durationMs": 3530,
+          "substeps": [
+            "Live DNS query: 3 records returned",
+            "RDAP registry lookup: AS49870 (Solaris Networks BV)",
+            "Network owner: Solaris Network Infrastructure"
+          ],
+          "findings": [
+            {
+              "title": "Network ASN",
+              "value": "AS49870 (Solaris Networks BV)",
+              "badge": "Netherlands (NL)"
+            },
+            {
+              "title": "RDAP Organization",
+              "value": "Solaris Network Infrastructure",
+              "badge": "Hosting Provider"
+            },
+            {
+              "title": "DNS Resolution Records",
+              "value": "3 Records Identified",
+              "badge": "911ms latency"
+            }
+          ]
+        },
+        {
+          "id": "stage-3",
+          "name": "Commercial & Community Threat Feeds",
+          "description": "Cross-reference indicators against MISP, AlienVault OTX, ThreatFox, and CISA KEV bulletins.",
+          "status": "completed",
+          "toolName": "ThreatFeedAggregator",
+          "query": "185.220.101.5, quantum-defense.org, CVE-2026-8912",
+          "resultSummary": "Threat intelligence feeds corroborated malicious beaconing and active exploitation in wild.",
+          "evidenceCount": 5,
+          "durationMs": 2557,
+          "substeps": [
+            "Queried ThreatFox open API for IOC match",
+            "Cross-checked CISA Known Exploited Vulnerabilities catalog",
+            "Aggregated MISP Community telemetry pulses"
+          ],
+          "findings": [
+            {
+              "title": "ThreatFox Records",
+              "value": "1 Active Records",
+              "badge": "BlackVenom C2"
+            },
+            {
+              "title": "CISA KEV Status",
+              "value": "CVE-2026-8912 (Listed)",
+              "badge": "Emergency Directive"
+            },
+            {
+              "title": "Reputation Score",
+              "value": "94 / 100 Malicious",
+              "badge": "Critical"
+            }
+          ]
+        },
+        {
+          "id": "stage-4",
+          "name": "MITRE ATT&CK Correlation",
+          "description": "Map observed telemetry and infrastructure characteristics to ATT&CK tactics and techniques.",
+          "status": "completed",
+          "toolName": "AttackMatrixCorrelator",
+          "query": "Observed perimeter traffic, TLS handshakes and exploit headers",
+          "resultSummary": "5 ATT&CK techniques correlated with >85% confidence.",
+          "evidenceCount": 5,
+          "durationMs": 1,
+          "substeps": [
+            "Initial Access: T1190 (Exploit Public-Facing Application)",
+            "Command and Control: T1071.001 (Application Layer Protocol: Web Protocols)",
+            "Execution: T1059.001 (Command and Scripting: PowerShell)",
+            "Defense Evasion: T1055.012 (Process Injection: Process Hollowing)",
+            "Defense Evasion: T1027.002 (Obfuscated Files or Information: Software Packing)"
+          ],
+          "findings": [
+            {
+              "title": "Initial Access",
+              "value": "T1190: Exploit Public-Facing Application",
+              "badge": "Correlated"
+            },
+            {
+              "title": "Command and Control",
+              "value": "T1071.001: Application Layer Protocol: Web Protocols",
+              "badge": "Correlated"
+            },
+            {
+              "title": "Execution",
+              "value": "T1059.001: Command and Scripting: PowerShell",
+              "badge": "Correlated"
+            }
+          ]
+        },
+        {
+          "id": "stage-5",
+          "name": "Infrastructure Analysis & Pivot Expansion",
+          "description": "Graph traversal across co-located IPs, shared TLS certs, and SSH keys.",
+          "status": "completed",
+          "toolName": "GraphInfrastructureExpander",
+          "query": "Pivots on 185.220.101.5 and quantum-defense.org",
+          "resultSummary": "Discovered 2 secondary staging servers and 1 spoofed procurement domain.",
+          "evidenceCount": 7,
+          "durationMs": 0,
+          "substeps": [
+            "Pivoted on TLS certificate serial 4A91B8820",
+            "Discovered secondary staging server 185.220.101.19",
+            "Linked spoofed domain quantum-defense.org"
+          ],
+          "findings": [
+            {
+              "title": "Secondary C2 Node",
+              "value": "185.220.101.19",
+              "badge": "Shared TLS Keypair"
+            },
+            {
+              "title": "Spoofed Domain",
+              "value": "quantum-defense.org",
+              "badge": "Procurement Decoy"
+            },
+            {
+              "title": "JARM Fingerprint",
+              "value": "27d36d2d000d000dc427d36d2d000d",
+              "badge": "BlackVenom Match"
+            }
+          ]
+        },
+        {
+          "id": "stage-6",
+          "name": "Malware Family Signature Correlation",
+          "description": "Compare beaconing payload headers and binary hashes against YARA & static rules.",
+          "status": "completed",
+          "toolName": "MalwareSignatureEngine",
+          "query": "TLS 1.3 Handshake JARM and Dropper SHA256: 7f9a2e88c014...",
+          "resultSummary": "Verified match with BlackVenom RAT v3.2. Proprietary encrypted reverse shell with memory unhooking.",
+          "evidenceCount": 5,
+          "durationMs": 0,
+          "substeps": [
+            "YARA signature match: RULE_APT84_BLACKVENOM_LOADER_V3",
+            "Direct system call invocation detected for NTDLL unhooking",
+            "C2 heartbeat configured over TLS/8443 with randomized jitter"
+          ],
+          "findings": [
+            {
+              "title": "Malware Family",
+              "value": "BlackVenom RAT v3.2",
+              "badge": "Espionage RAT"
+            },
+            {
+              "title": "EDR Evasion",
+              "value": "In-Memory NTDLL Unhooking",
+              "badge": "Verified"
+            },
+            {
+              "title": "Beacon Port",
+              "value": "Port 8443 (HTTPS)",
+              "badge": "Encrypted"
+            }
+          ]
+        },
+        {
+          "id": "stage-7",
+          "name": "Threat Actor Attribution Analysis",
+          "description": "Hypothesis testing and attribution scoring against known APT threat actor profiles.",
+          "status": "completed",
+          "toolName": "AttributionEngine",
+          "query": "Tooling, victimology, and operational timing correlation",
+          "resultSummary": "Primary attribution: APT-84 (RedBanshee / Cobalt Frost) with 91% confidence.",
+          "evidenceCount": 8,
+          "durationMs": 0,
+          "substeps": [
+            "Victimology overlap: Defense and aerospace contractors in Western Europe",
+            "Proprietary tooling match: BlackVenom RAT is exclusively used by APT-84",
+            "Infrastructure registration cadence aligns with historical campaigns"
+          ],
+          "findings": [
+            {
+              "title": "Attributed Group",
+              "value": "APT-84 (RedBanshee)",
+              "badge": "91% Confidence"
+            },
+            {
+              "title": "Associated Campaign",
+              "value": "Operation Arctic Ghost",
+              "badge": "Active"
+            },
+            {
+              "title": "Target Sector",
+              "value": "Defense & Aerospace",
+              "badge": "Critical"
+            }
+          ]
+        },
+        {
+          "id": "stage-8",
+          "name": "Evidence Provenance & Contradiction Verification",
+          "description": "Trace claims to primary sources, evaluate reliability weights, and flag dissenting reports.",
+          "status": "completed",
+          "toolName": "EvidenceVerifier",
+          "query": "Claims provenance check across ingested intelligence sources",
+          "resultSummary": "Verified 3 core analytical claims with immutable source citations. 1 contradiction reviewed & resolved.",
+          "evidenceCount": 9,
+          "durationMs": 0,
+          "substeps": [
+            "Tracked provenance citations for all 3 analytical claims",
+            "Evaluated source reliability index (Mean: 93.4%)",
+            "Flagged and resolved dissenting attribution from CrowdSensor CS-994"
+          ],
+          "findings": [
+            {
+              "title": "Verified Claims",
+              "value": "3 Major Findings",
+              "badge": "Traceable"
+            },
+            {
+              "title": "Dissenting Sources",
+              "value": "1 Resolved Flag",
+              "badge": "Reviewed"
+            },
+            {
+              "title": "Mean Reliability",
+              "value": "93.4%",
+              "badge": "High Provenance"
+            }
+          ]
+        },
+        {
+          "id": "stage-9",
+          "name": "Final Assessment & Action Guidance",
+          "description": "Synthesize evidence-grounded intelligence assessment and actionable containment recommendations.",
+          "status": "completed",
+          "toolName": "ExecutiveSynthesizer",
+          "query": "Generate executive summary, mitigations, and STIX 2.1 package",
+          "resultSummary": "Assessment completed. Formatted into executive dossier with STIX 2.1 export bundle.",
+          "evidenceCount": 4,
+          "durationMs": 0,
+          "substeps": [
+            "Formulated perimeter containment blocklist",
+            "Generated YARA and memory hunting signatures",
+            "Compiled STIX 2.1 bundle for sharing"
+          ],
+          "findings": [
+            {
+              "title": "Severity Rating",
+              "value": "Critical (Severity 5)",
+              "badge": "Immediate Action"
+            },
+            {
+              "title": "Containment State",
+              "value": "Egress Block Recommended",
+              "badge": "Priority 1"
+            },
+            {
+              "title": "Export Package",
+              "value": "STIX 2.1 Bundle Ready",
+              "badge": "Exportable"
+            }
+          ]
+        }
+      ],
+      "agentTraces": [
+        {
+          "id": "tr-1",
+          "timestamp": "21:52:04",
+          "level": "info",
+          "action": "Dispatched investigation task for input: 185.220.101.5, quantum-defense.org, CVE-2026-8912",
+          "tool": "Dispatcher"
+        },
+        {
+          "id": "tr-2",
+          "timestamp": "21:52:04",
+          "level": "tool_call",
+          "action": "Parsed 3 observable entities from query",
+          "tool": "EntityNormalizer",
+          "recordsCount": 3
+        },
+        {
+          "id": "tr-3",
+          "timestamp": "21:52:04",
+          "level": "tool_call",
+          "action": "Executing live DNS resolution and RDAP queries for 185.220.101.5",
+          "tool": "DnsIntelligenceResolver",
+          "target": "185.220.101.5"
+        },
+        {
+          "id": "tr-4",
+          "timestamp": "21:52:07",
+          "level": "correlation",
+          "action": "Retrieved BGP ASN: AS49870 (Solaris Networks BV) (Solaris Network Infrastructure) in Netherlands (NL)",
+          "tool": "RdapLookupEngine",
+          "target": "185.220.101.5",
+          "recordsCount": 1
+        },
+        {
+          "id": "tr-5",
+          "timestamp": "21:52:07",
+          "level": "tool_call",
+          "action": "Querying ThreatFox and CISA KEV feeds for indicator matches",
+          "tool": "ThreatFeedAggregator",
+          "target": "185.220.101.5"
+        },
+        {
+          "id": "tr-6",
+          "timestamp": "21:52:10",
+          "level": "correlation",
+          "action": "ThreatFox returned 1 active IOC records; CISA KEV verified",
+          "tool": "ThreatFeedAggregator",
+          "recordsCount": 1
+        },
+        {
+          "id": "tr-7",
+          "timestamp": "21:52:10",
+          "level": "tool_call",
+          "action": "Correlating network telemetry and exploit signatures against MITRE ATT&CK v15",
+          "tool": "AttackMatrixCorrelator"
+        },
+        {
+          "id": "tr-8",
+          "timestamp": "21:52:10",
+          "level": "correlation",
+          "action": "Mapped 5 MITRE ATT&CK techniques with high confidence",
+          "tool": "AttackMatrixCorrelator",
+          "recordsCount": 5
+        },
+        {
+          "id": "tr-9",
+          "timestamp": "21:52:10",
+          "level": "tool_call",
+          "action": "Expanding relationship graph across shared TLS certificates and co-located subnets",
+          "tool": "GraphInfrastructureExpander",
+          "target": "185.220.101.5"
+        },
+        {
+          "id": "tr-10",
+          "timestamp": "21:52:10",
+          "level": "correlation",
+          "action": "Discovered secondary staging IP 185.220.101.19 via shared SSL cert serial 4A91B8820",
+          "tool": "GraphInfrastructureExpander",
+          "target": "185.220.101.19",
+          "recordsCount": 2
+        },
+        {
+          "id": "tr-11",
+          "timestamp": "21:52:10",
+          "level": "tool_call",
+          "action": "Evaluating binary hashes and in-memory execution signatures",
+          "tool": "MalwareSignatureEngine",
+          "target": "BlackVenom RAT"
+        },
+        {
+          "id": "tr-12",
+          "timestamp": "21:52:10",
+          "level": "tool_call",
+          "action": "Evaluating actor attribution hypothesis based on tooling and victimology",
+          "tool": "AttributionEngine",
+          "target": "APT-84"
+        },
+        {
+          "id": "tr-13",
+          "timestamp": "21:52:10",
+          "level": "conflict",
+          "action": "Detected conflicting proxy farm attribution in source CS-994 (SilverFox vs APT-84)",
+          "tool": "EvidenceVerifier",
+          "details": "Heuristic resolved: APT-84 rented commercial VPS subnets within AS49870."
+        },
+        {
+          "id": "tr-14",
+          "timestamp": "21:52:10",
+          "level": "verification",
+          "action": "Verified 3 major claims across 9 primary sources with 93.4% mean reliability",
+          "tool": "EvidenceVerifier",
+          "recordsCount": 3
+        },
+        {
+          "id": "tr-15",
+          "timestamp": "21:52:10",
+          "level": "completed",
+          "action": "Generated final assessment and emergency mitigation playbook for INV-2026-3250",
+          "tool": "ExecutiveSynthesizer"
+        }
+      ],
+      "recommendedActions": [
+        "Emergency perimeter firewall block on IPv4 185.220.101.5 and subnet range.",
+        "Sinkhole DNS resolution for domain quantum-defense.org across all enterprise resolvers.",
+        "Deploy emergency patch for CVE-2026-8912 per CISA Emergency Directive.",
+        "Execute memory sweep for TLS JARM 27d36d2d000d000dc427d36d2d000d across all perimeter proxies.",
+        "Share STIX 2.1 intelligence bundle with sectoral ISAC and national CERT coordinators."
+      ]
+    },
+    "INV-2026-5125": {
+      "id": "INV-2026-5125",
+      "query": "185.220.101.5 quantum-defense.org CVE-2026-8912",
+      "type": "hybrid",
+      "status": "completed",
+      "confidence": "high",
+      "confidenceScore": 89,
+      "updatedAt": "Just now",
+      "createdAt": "2026-09-24 16:25:19 UTC",
+      "analyst": "Tier-3 Threat Intel Lead",
+      "executiveSummary": "High-confidence malicious infrastructure identified. The primary indicator 185.220.101.5 operates as a dual-role Command-and-Control (C2) and staging node for BlackVenom RAT. DNS correlations reveal active resolution to quantum-defense.org hosting weaponized CVE-2026-8912 exploits. Attribution correlates with 91% confidence to state-sponsored threat group APT-84 (RedBanshee / Cobalt Frost) under Operation Arctic Ghost targeting aerospace and energy defense contractors.",
+      "evidenceStrength": "Strong",
+      "lastObserved": "2026-09-24 16:25:19 UTC",
+      "sourcesCount": 9,
+      "keyFindings": [
+        "IP 185.220.101.5 identified as active C2 server communicating with BlackVenom RAT beacons via HTTPS over port 8443.",
+        "Domain quantum-defense.org registered via privacy shield; historical DNS overlaps with known APT-84 clusters.",
+        "Vulnerability CVE-2026-8912 weaponized for boundary foothold prior to execution.",
+        "1 conflicting attribution hypothesis (proxy leasing) investigated and reconciled: APT-84 utilized Solaris Networks VPS subnets as operational forward relays.",
+        "6 MITRE ATT&CK techniques confirmed in internal perimeter telemetry matching active beacon intervals."
+      ],
+      "claims": [
+        {
+          "id": "claim-1",
+          "claimText": "IP 185.220.101.5 acts as active Command & Control (C2) node for BlackVenom RAT v3.2",
+          "provenanceType": "source_fact",
+          "strengthPercentage": 94,
+          "supportingCount": 5,
+          "contradictionCount": 0,
+          "supportingEvidence": [
+            {
+              "id": "ev-101",
+              "sourceName": "CERT-EU Threat Advisory #26-081",
+              "sourceType": "CERT Advisory",
+              "publishedDate": "2026-08-28",
+              "observedDate": "2026-08-27",
+              "relationship": "IP 185.220.101.5 → BlackVenom C2 listener on TLS/8443",
+              "excerpt": "Observed TLS certificate fingerprint matching BlackVenom default beacon self-signed cert on 185.220.101.5.",
+              "reliabilityScore": 95,
+              "tlp": "WHITE"
+            },
+            {
+              "id": "ev-102",
+              "sourceName": "ThreatFox Open CTI Exchange",
+              "sourceType": "OSINT Feed",
+              "publishedDate": "2026-09-02",
+              "observedDate": "2026-09-01",
+              "relationship": "Attribute: ip-dst 185.220.101.5 tagged #BlackVenom #APT84",
+              "excerpt": "Corroborated by reporting participating SOCs observing outbound beacons from isolated workstations.",
+              "reliabilityScore": 92,
+              "tlp": "GREEN"
+            }
+          ]
+        },
+        {
+          "id": "claim-2",
+          "claimText": "Domain quantum-defense.org belongs to Operation Arctic Ghost campaign infrastructure",
+          "provenanceType": "ai_interpretation",
+          "strengthPercentage": 86,
+          "supportingCount": 4,
+          "contradictionCount": 1,
+          "supportingEvidence": [
+            {
+              "id": "ev-201",
+              "sourceName": "AlienVault OTX Pulse: Arctic Ghost Infrastructure",
+              "sourceType": "Commercial Feed",
+              "publishedDate": "2026-09-08",
+              "observedDate": "2026-09-07",
+              "relationship": "Domain quantum-defense.org resolved to 185.220.101.5",
+              "excerpt": "Passive DNS pivot confirmed registration pattern matches prior APT-84 spearphishing domain registration cadence.",
+              "reliabilityScore": 88,
+              "tlp": "WHITE"
+            }
+          ],
+          "contradictoryEvidence": [
+            {
+              "id": "contra-1",
+              "sourceName": "CrowdSensor Threat Feed #CS-994",
+              "observedDate": "2026-09-04",
+              "dissentingClaim": "Attributed infrastructure cluster to commercial proxy operator \"SilverFox Leasing\"",
+              "reason": "ASN AS60729 Stiftung Erneuerbare Freiheit contains shared VPS hosting providers used by both cybercrime syndicates and state actors. Analyst review determined APT-84 rented space within this VPS subnet.",
+              "severity": "medium",
+              "resolved": true
+            }
+          ],
+          "analystNote": "Resolved: Infrastructure overlap is consistent with APT-84 tradecraft of leasing legitimate VPS commercial IP blocks to evade geographic blocking."
+        },
+        {
+          "id": "claim-3",
+          "claimText": "CVE-2026-8912 is actively weaponized for boundary access prior to payload execution",
+          "provenanceType": "source_fact",
+          "strengthPercentage": 92,
+          "supportingCount": 3,
+          "contradictionCount": 0,
+          "supportingEvidence": [
+            {
+              "id": "ev-301",
+              "sourceName": "CISA Known Exploited Vulnerabilities (KEV) Catalog",
+              "sourceType": "CERT Advisory",
+              "publishedDate": "2026-09-05",
+              "observedDate": "2026-09-05",
+              "relationship": "CVE-2026-8912 listed in CISA KEV catalog",
+              "excerpt": "Improper input neutralization on HTTP management endpoint on port 8443 enables remote code execution.",
+              "reliabilityScore": 99,
+              "tlp": "WHITE"
+            }
+          ]
+        }
+      ],
+      "relatedEntities": [
+        {
+          "type": "actor",
+          "label": "APT-84 (RedBanshee)",
+          "relation": "attributed_to",
+          "confidence": 91,
+          "severity": "critical"
+        },
+        {
+          "type": "malware",
+          "label": "BlackVenom RAT v3.2",
+          "relation": "uses",
+          "confidence": 96,
+          "severity": "critical"
+        },
+        {
+          "type": "campaign",
+          "label": "Operation Arctic Ghost",
+          "relation": "associated_with",
+          "confidence": 88,
+          "severity": "high"
+        },
+        {
+          "type": "cve",
+          "label": "CVE-2026-8912",
+          "relation": "exploits",
+          "confidence": 94,
+          "severity": "critical"
+        },
+        {
+          "type": "domain",
+          "label": "quantum-defense.org",
+          "relation": "resolves_to",
+          "confidence": 98,
+          "severity": "high"
+        },
+        {
+          "type": "ip",
+          "label": "185.220.101.5",
+          "relation": "controls",
+          "confidence": 95,
+          "severity": "critical"
+        },
+        {
+          "type": "technique",
+          "label": "T1190 Exploit Public-Facing App",
+          "relation": "uses",
+          "confidence": 95,
+          "severity": "high"
+        },
+        {
+          "type": "technique",
+          "label": "T1071.001 Web Protocols",
+          "relation": "uses",
+          "confidence": 92,
+          "severity": "medium"
+        }
+      ],
+      "attackTechniques": [
+        "T1190",
+        "T1071.001",
+        "T1059.001",
+        "T1055.012",
+        "T1027.002"
+      ],
+      "stages": [
+        {
+          "id": "stage-1",
+          "name": "Entity Disambiguation & Normalization",
+          "description": "Parse raw input indicators into canonical STIX 2.1 cyber observable objects.",
+          "status": "completed",
+          "toolName": "EntityNormalizer",
+          "query": "185.220.101.5 quantum-defense.org CVE-2026-8912",
+          "resultSummary": "3 observables parsed and categorized into canonical schemas.",
+          "evidenceCount": 3,
+          "durationMs": 1,
+          "substeps": [
+            "Validated observable format: 185.220.101.5 (ip)",
+            "Validated observable format: quantum-defense.org (domain)",
+            "Validated observable format: CVE-2026-8912 (cve)"
+          ],
+          "findings": [
+            {
+              "title": "IP",
+              "value": "185.220.101.5",
+              "badge": "IPv4 Observable"
+            },
+            {
+              "title": "DOMAIN",
+              "value": "quantum-defense.org",
+              "badge": "Domain FQDN"
+            },
+            {
+              "title": "CVE",
+              "value": "CVE-2026-8912",
+              "badge": "Vulnerability"
+            }
+          ]
+        },
+        {
+          "id": "stage-2",
+          "name": "IOC Enrichment (Passive DNS & WHOIS)",
+          "description": "Query passive DNS repositories, WHOIS ownership history, and BGP AS routing.",
+          "status": "completed",
+          "toolName": "PassiveDnsIntelligence",
+          "query": "185.220.101.5 & quantum-defense.org",
+          "resultSummary": "Resolved 3 active DNS records. Routed through AS60729 Stiftung Erneuerbare Freiheit (Germany).",
+          "evidenceCount": 5,
+          "durationMs": 516,
+          "substeps": [
+            "Live DNS query: 3 records returned",
+            "RDAP registry lookup: AS60729 Stiftung Erneuerbare Freiheit",
+            "Network owner: Artikel10 e.V"
+          ],
+          "findings": [
+            {
+              "title": "Network ASN",
+              "value": "AS60729 Stiftung Erneuerbare Freiheit",
+              "badge": "Germany"
+            },
+            {
+              "title": "RDAP Organization",
+              "value": "Artikel10 e.V",
+              "badge": "Hosting Provider"
+            },
+            {
+              "title": "DNS Resolution Records",
+              "value": "3 Records Identified",
+              "badge": "70ms latency"
+            }
+          ]
+        },
+        {
+          "id": "stage-3",
+          "name": "Commercial & Community Threat Feeds",
+          "description": "Cross-reference indicators against MISP, AlienVault OTX, ThreatFox, and CISA KEV bulletins.",
+          "status": "completed",
+          "toolName": "ThreatFeedAggregator",
+          "query": "185.220.101.5, quantum-defense.org, CVE-2026-8912",
+          "resultSummary": "Threat intelligence feeds corroborated malicious beaconing and active exploitation in wild.",
+          "evidenceCount": 5,
+          "durationMs": 1281,
+          "substeps": [
+            "Queried ThreatFox open API for IOC match",
+            "Cross-checked CISA Known Exploited Vulnerabilities catalog",
+            "Aggregated MISP Community telemetry pulses"
+          ],
+          "findings": [
+            {
+              "title": "ThreatFox Records",
+              "value": "1 Active Records",
+              "badge": "BlackVenom C2"
+            },
+            {
+              "title": "CISA KEV Status",
+              "value": "CVE-2026-8912 (Listed)",
+              "badge": "Emergency Directive"
+            },
+            {
+              "title": "Reputation Score",
+              "value": "94 / 100 Malicious",
+              "badge": "Critical"
+            }
+          ]
+        },
+        {
+          "id": "stage-4",
+          "name": "MITRE ATT&CK Correlation",
+          "description": "Map observed telemetry and infrastructure characteristics to ATT&CK tactics and techniques.",
+          "status": "completed",
+          "toolName": "AttackMatrixCorrelator",
+          "query": "Observed perimeter traffic, TLS handshakes and exploit headers",
+          "resultSummary": "5 ATT&CK techniques correlated with >85% confidence.",
+          "evidenceCount": 5,
+          "durationMs": 2,
+          "substeps": [
+            "Initial Access: T1190 (Exploit Public-Facing Application)",
+            "Command and Control: T1071.001 (Application Layer Protocol: Web Protocols)",
+            "Execution: T1059.001 (Command and Scripting: PowerShell)",
+            "Defense Evasion: T1055.012 (Process Injection: Process Hollowing)",
+            "Defense Evasion: T1027.002 (Obfuscated Files or Information: Software Packing)"
+          ],
+          "findings": [
+            {
+              "title": "Initial Access",
+              "value": "T1190: Exploit Public-Facing Application",
+              "badge": "Correlated"
+            },
+            {
+              "title": "Command and Control",
+              "value": "T1071.001: Application Layer Protocol: Web Protocols",
+              "badge": "Correlated"
+            },
+            {
+              "title": "Execution",
+              "value": "T1059.001: Command and Scripting: PowerShell",
+              "badge": "Correlated"
+            }
+          ]
+        },
+        {
+          "id": "stage-5",
+          "name": "Infrastructure Analysis & Pivot Expansion",
+          "description": "Graph traversal across co-located IPs, shared TLS certs, and SSH keys.",
+          "status": "completed",
+          "toolName": "GraphInfrastructureExpander",
+          "query": "Pivots on 185.220.101.5 and quantum-defense.org",
+          "resultSummary": "Discovered 2 secondary staging servers and 1 spoofed procurement domain.",
+          "evidenceCount": 7,
+          "durationMs": 1,
+          "substeps": [
+            "Pivoted on TLS certificate serial 4A91B8820",
+            "Discovered secondary staging server 185.220.101.19",
+            "Linked spoofed domain quantum-defense.org"
+          ],
+          "findings": [
+            {
+              "title": "Secondary C2 Node",
+              "value": "185.220.101.19",
+              "badge": "Shared TLS Keypair"
+            },
+            {
+              "title": "Spoofed Domain",
+              "value": "quantum-defense.org",
+              "badge": "Procurement Decoy"
+            },
+            {
+              "title": "JARM Fingerprint",
+              "value": "27d36d2d000d000dc427d36d2d000d",
+              "badge": "BlackVenom Match"
+            }
+          ]
+        },
+        {
+          "id": "stage-6",
+          "name": "Malware Family Signature Correlation",
+          "description": "Compare beaconing payload headers and binary hashes against YARA & static rules.",
+          "status": "completed",
+          "toolName": "MalwareSignatureEngine",
+          "query": "TLS 1.3 Handshake JARM and Dropper SHA256: 7f9a2e88c014...",
+          "resultSummary": "Verified match with BlackVenom RAT v3.2. Proprietary encrypted reverse shell with memory unhooking.",
+          "evidenceCount": 5,
+          "durationMs": 0,
+          "substeps": [
+            "YARA signature match: RULE_APT84_BLACKVENOM_LOADER_V3",
+            "Direct system call invocation detected for NTDLL unhooking",
+            "C2 heartbeat configured over TLS/8443 with randomized jitter"
+          ],
+          "findings": [
+            {
+              "title": "Malware Family",
+              "value": "BlackVenom RAT v3.2",
+              "badge": "Espionage RAT"
+            },
+            {
+              "title": "EDR Evasion",
+              "value": "In-Memory NTDLL Unhooking",
+              "badge": "Verified"
+            },
+            {
+              "title": "Beacon Port",
+              "value": "Port 8443 (HTTPS)",
+              "badge": "Encrypted"
+            }
+          ]
+        },
+        {
+          "id": "stage-7",
+          "name": "Threat Actor Attribution Analysis",
+          "description": "Hypothesis testing and attribution scoring against known APT threat actor profiles.",
+          "status": "completed",
+          "toolName": "AttributionEngine",
+          "query": "Tooling, victimology, and operational timing correlation",
+          "resultSummary": "Primary attribution: APT-84 (RedBanshee / Cobalt Frost) with 91% confidence.",
+          "evidenceCount": 8,
+          "durationMs": 0,
+          "substeps": [
+            "Victimology overlap: Defense and aerospace contractors in Western Europe",
+            "Proprietary tooling match: BlackVenom RAT is exclusively used by APT-84",
+            "Infrastructure registration cadence aligns with historical campaigns"
+          ],
+          "findings": [
+            {
+              "title": "Attributed Group",
+              "value": "APT-84 (RedBanshee)",
+              "badge": "91% Confidence"
+            },
+            {
+              "title": "Associated Campaign",
+              "value": "Operation Arctic Ghost",
+              "badge": "Active"
+            },
+            {
+              "title": "Target Sector",
+              "value": "Defense & Aerospace",
+              "badge": "Critical"
+            }
+          ]
+        },
+        {
+          "id": "stage-8",
+          "name": "Evidence Provenance & Contradiction Verification",
+          "description": "Trace claims to primary sources, evaluate reliability weights, and flag dissenting reports.",
+          "status": "completed",
+          "toolName": "EvidenceVerifier",
+          "query": "Claims provenance check across ingested intelligence sources",
+          "resultSummary": "Verified 3 core analytical claims with immutable source citations. 1 contradiction reviewed & resolved.",
+          "evidenceCount": 9,
+          "durationMs": 0,
+          "substeps": [
+            "Tracked provenance citations for all 3 analytical claims",
+            "Evaluated source reliability index (Mean: 93.4%)",
+            "Flagged and resolved dissenting attribution from CrowdSensor CS-994"
+          ],
+          "findings": [
+            {
+              "title": "Verified Claims",
+              "value": "3 Major Findings",
+              "badge": "Traceable"
+            },
+            {
+              "title": "Dissenting Sources",
+              "value": "1 Resolved Flag",
+              "badge": "Reviewed"
+            },
+            {
+              "title": "Mean Reliability",
+              "value": "93.4%",
+              "badge": "High Provenance"
+            }
+          ]
+        },
+        {
+          "id": "stage-9",
+          "name": "Final Assessment & Action Guidance",
+          "description": "Synthesize evidence-grounded intelligence assessment and actionable containment recommendations.",
+          "status": "completed",
+          "toolName": "ExecutiveSynthesizer",
+          "query": "Generate executive summary, mitigations, and STIX 2.1 package",
+          "resultSummary": "Assessment completed. Formatted into executive dossier with STIX 2.1 export bundle.",
+          "evidenceCount": 4,
+          "durationMs": 0,
+          "substeps": [
+            "Formulated perimeter containment blocklist",
+            "Generated YARA and memory hunting signatures",
+            "Compiled STIX 2.1 bundle for sharing"
+          ],
+          "findings": [
+            {
+              "title": "Severity Rating",
+              "value": "Critical (Severity 5)",
+              "badge": "Immediate Action"
+            },
+            {
+              "title": "Containment State",
+              "value": "Egress Block Recommended",
+              "badge": "Priority 1"
+            },
+            {
+              "title": "Export Package",
+              "value": "STIX 2.1 Bundle Ready",
+              "badge": "Exportable"
+            }
+          ]
+        }
+      ],
+      "agentTraces": [
+        {
+          "id": "tr-1",
+          "timestamp": "21:55:19",
+          "level": "info",
+          "action": "Dispatched investigation task for input: 185.220.101.5 quantum-defense.org CVE-2026-8912",
+          "tool": "Dispatcher"
+        },
+        {
+          "id": "tr-2",
+          "timestamp": "21:55:19",
+          "level": "tool_call",
+          "action": "Parsed 3 observable entities from query",
+          "tool": "EntityNormalizer",
+          "recordsCount": 3
+        },
+        {
+          "id": "tr-3",
+          "timestamp": "21:55:19",
+          "level": "tool_call",
+          "action": "Executing live DNS resolution and RDAP queries for 185.220.101.5",
+          "tool": "DnsIntelligenceResolver",
+          "target": "185.220.101.5"
+        },
+        {
+          "id": "tr-4",
+          "timestamp": "21:55:19",
+          "level": "correlation",
+          "action": "Retrieved BGP ASN: AS60729 Stiftung Erneuerbare Freiheit (Artikel10 e.V) in Germany",
+          "tool": "RdapLookupEngine",
+          "target": "185.220.101.5",
+          "recordsCount": 1
+        },
+        {
+          "id": "tr-5",
+          "timestamp": "21:55:19",
+          "level": "tool_call",
+          "action": "Querying ThreatFox and CISA KEV feeds for indicator matches",
+          "tool": "ThreatFeedAggregator",
+          "target": "185.220.101.5"
+        },
+        {
+          "id": "tr-6",
+          "timestamp": "21:55:21",
+          "level": "correlation",
+          "action": "ThreatFox returned 1 active IOC records; CISA KEV verified",
+          "tool": "ThreatFeedAggregator",
+          "recordsCount": 1
+        },
+        {
+          "id": "tr-7",
+          "timestamp": "21:55:21",
+          "level": "tool_call",
+          "action": "Correlating network telemetry and exploit signatures against MITRE ATT&CK v15",
+          "tool": "AttackMatrixCorrelator"
+        },
+        {
+          "id": "tr-8",
+          "timestamp": "21:55:21",
+          "level": "correlation",
+          "action": "Mapped 5 MITRE ATT&CK techniques with high confidence",
+          "tool": "AttackMatrixCorrelator",
+          "recordsCount": 5
+        },
+        {
+          "id": "tr-9",
+          "timestamp": "21:55:21",
+          "level": "tool_call",
+          "action": "Expanding relationship graph across shared TLS certificates and co-located subnets",
+          "tool": "GraphInfrastructureExpander",
+          "target": "185.220.101.5"
+        },
+        {
+          "id": "tr-10",
+          "timestamp": "21:55:21",
+          "level": "correlation",
+          "action": "Discovered secondary staging IP 185.220.101.19 via shared SSL cert serial 4A91B8820",
+          "tool": "GraphInfrastructureExpander",
+          "target": "185.220.101.19",
+          "recordsCount": 2
+        },
+        {
+          "id": "tr-11",
+          "timestamp": "21:55:21",
+          "level": "tool_call",
+          "action": "Evaluating binary hashes and in-memory execution signatures",
+          "tool": "MalwareSignatureEngine",
+          "target": "BlackVenom RAT"
+        },
+        {
+          "id": "tr-12",
+          "timestamp": "21:55:21",
+          "level": "tool_call",
+          "action": "Evaluating actor attribution hypothesis based on tooling and victimology",
+          "tool": "AttributionEngine",
+          "target": "APT-84"
+        },
+        {
+          "id": "tr-13",
+          "timestamp": "21:55:21",
+          "level": "conflict",
+          "action": "Detected conflicting proxy farm attribution in source CS-994 (SilverFox vs APT-84)",
+          "tool": "EvidenceVerifier",
+          "details": "Heuristic resolved: APT-84 rented commercial VPS subnets within AS49870."
+        },
+        {
+          "id": "tr-14",
+          "timestamp": "21:55:21",
+          "level": "verification",
+          "action": "Verified 3 major claims across 9 primary sources with 93.4% mean reliability",
+          "tool": "EvidenceVerifier",
+          "recordsCount": 3
+        },
+        {
+          "id": "tr-15",
+          "timestamp": "21:55:21",
+          "level": "completed",
+          "action": "Generated final assessment and emergency mitigation playbook for INV-2026-5125",
+          "tool": "ExecutiveSynthesizer"
+        }
+      ],
+      "recommendedActions": [
+        "Emergency perimeter firewall block on IPv4 185.220.101.5 and subnet range.",
+        "Sinkhole DNS resolution for domain quantum-defense.org across all enterprise resolvers.",
+        "Deploy emergency patch for CVE-2026-8912 per CISA Emergency Directive.",
+        "Execute memory sweep for TLS JARM 27d36d2d000d000dc427d36d2d000d across all perimeter proxies.",
+        "Share STIX 2.1 intelligence bundle with sectoral ISAC and national CERT coordinators."
+      ]
+    },
+    "INV-2026-8246": {
+      "id": "INV-2026-8246",
+      "query": "185.220.101.5\nquantum-defense.org\nCVE-2026-8912",
+      "type": "hybrid",
+      "status": "completed",
+      "confidence": "high",
+      "confidenceScore": 89,
+      "updatedAt": "Just now",
+      "createdAt": "2026-09-24 16:30:05 UTC",
+      "analyst": "Tier-3 Threat Intel Lead",
+      "executiveSummary": "High-confidence malicious infrastructure identified. The primary indicator 185.220.101.5 operates as a dual-role Command-and-Control (C2) and staging node for BlackVenom RAT. DNS correlations reveal active resolution to quantum-defense.org hosting weaponized CVE-2026-8912 exploits. Attribution correlates with 91% confidence to state-sponsored threat group APT-84 (RedBanshee / Cobalt Frost) under Operation Arctic Ghost targeting aerospace and energy defense contractors.",
+      "evidenceStrength": "Strong",
+      "lastObserved": "2026-09-24 16:30:05 UTC",
+      "sourcesCount": 9,
+      "keyFindings": [
+        "IP 185.220.101.5 identified as active C2 server communicating with BlackVenom RAT beacons via HTTPS over port 8443.",
+        "Domain quantum-defense.org registered via privacy shield; historical DNS overlaps with known APT-84 clusters.",
+        "Vulnerability CVE-2026-8912 weaponized for boundary foothold prior to execution.",
+        "1 conflicting attribution hypothesis (proxy leasing) investigated and reconciled: APT-84 utilized Solaris Networks VPS subnets as operational forward relays.",
+        "6 MITRE ATT&CK techniques confirmed in internal perimeter telemetry matching active beacon intervals."
+      ],
+      "claims": [
+        {
+          "id": "claim-1",
+          "claimText": "IP 185.220.101.5 acts as active Command & Control (C2) node for BlackVenom RAT v3.2",
+          "provenanceType": "source_fact",
+          "strengthPercentage": 94,
+          "supportingCount": 5,
+          "contradictionCount": 0,
+          "supportingEvidence": [
+            {
+              "id": "ev-101",
+              "sourceName": "CERT-EU Threat Advisory #26-081",
+              "sourceType": "CERT Advisory",
+              "publishedDate": "2026-08-28",
+              "observedDate": "2026-08-27",
+              "relationship": "IP 185.220.101.5 → BlackVenom C2 listener on TLS/8443",
+              "excerpt": "Observed TLS certificate fingerprint matching BlackVenom default beacon self-signed cert on 185.220.101.5.",
+              "reliabilityScore": 95,
+              "tlp": "WHITE"
+            },
+            {
+              "id": "ev-102",
+              "sourceName": "ThreatFox Open CTI Exchange",
+              "sourceType": "OSINT Feed",
+              "publishedDate": "2026-09-02",
+              "observedDate": "2026-09-01",
+              "relationship": "Attribute: ip-dst 185.220.101.5 tagged #BlackVenom #APT84",
+              "excerpt": "Corroborated by reporting participating SOCs observing outbound beacons from isolated workstations.",
+              "reliabilityScore": 92,
+              "tlp": "GREEN"
+            }
+          ]
+        },
+        {
+          "id": "claim-2",
+          "claimText": "Domain quantum-defense.org belongs to Operation Arctic Ghost campaign infrastructure",
+          "provenanceType": "ai_interpretation",
+          "strengthPercentage": 86,
+          "supportingCount": 4,
+          "contradictionCount": 1,
+          "supportingEvidence": [
+            {
+              "id": "ev-201",
+              "sourceName": "AlienVault OTX Pulse: Arctic Ghost Infrastructure",
+              "sourceType": "Commercial Feed",
+              "publishedDate": "2026-09-08",
+              "observedDate": "2026-09-07",
+              "relationship": "Domain quantum-defense.org resolved to 185.220.101.5",
+              "excerpt": "Passive DNS pivot confirmed registration pattern matches prior APT-84 spearphishing domain registration cadence.",
+              "reliabilityScore": 88,
+              "tlp": "WHITE"
+            }
+          ],
+          "contradictoryEvidence": [
+            {
+              "id": "contra-1",
+              "sourceName": "CrowdSensor Threat Feed #CS-994",
+              "observedDate": "2026-09-04",
+              "dissentingClaim": "Attributed infrastructure cluster to commercial proxy operator \"SilverFox Leasing\"",
+              "reason": "ASN AS60729 Stiftung Erneuerbare Freiheit contains shared VPS hosting providers used by both cybercrime syndicates and state actors. Analyst review determined APT-84 rented space within this VPS subnet.",
+              "severity": "medium",
+              "resolved": true
+            }
+          ],
+          "analystNote": "Resolved: Infrastructure overlap is consistent with APT-84 tradecraft of leasing legitimate VPS commercial IP blocks to evade geographic blocking."
+        },
+        {
+          "id": "claim-3",
+          "claimText": "CVE-2026-8912 is actively weaponized for boundary access prior to payload execution",
+          "provenanceType": "source_fact",
+          "strengthPercentage": 92,
+          "supportingCount": 3,
+          "contradictionCount": 0,
+          "supportingEvidence": [
+            {
+              "id": "ev-301",
+              "sourceName": "CISA Known Exploited Vulnerabilities (KEV) Catalog",
+              "sourceType": "CERT Advisory",
+              "publishedDate": "2026-09-05",
+              "observedDate": "2026-09-05",
+              "relationship": "CVE-2026-8912 listed in CISA KEV catalog",
+              "excerpt": "Improper input neutralization on HTTP management endpoint on port 8443 enables remote code execution.",
+              "reliabilityScore": 99,
+              "tlp": "WHITE"
+            }
+          ]
+        }
+      ],
+      "relatedEntities": [
+        {
+          "type": "actor",
+          "label": "APT-84 (RedBanshee)",
+          "relation": "attributed_to",
+          "confidence": 91,
+          "severity": "critical"
+        },
+        {
+          "type": "malware",
+          "label": "BlackVenom RAT v3.2",
+          "relation": "uses",
+          "confidence": 96,
+          "severity": "critical"
+        },
+        {
+          "type": "campaign",
+          "label": "Operation Arctic Ghost",
+          "relation": "associated_with",
+          "confidence": 88,
+          "severity": "high"
+        },
+        {
+          "type": "cve",
+          "label": "CVE-2026-8912",
+          "relation": "exploits",
+          "confidence": 94,
+          "severity": "critical"
+        },
+        {
+          "type": "domain",
+          "label": "quantum-defense.org",
+          "relation": "resolves_to",
+          "confidence": 98,
+          "severity": "high"
+        },
+        {
+          "type": "ip",
+          "label": "185.220.101.5",
+          "relation": "controls",
+          "confidence": 95,
+          "severity": "critical"
+        },
+        {
+          "type": "technique",
+          "label": "T1190 Exploit Public-Facing App",
+          "relation": "uses",
+          "confidence": 95,
+          "severity": "high"
+        },
+        {
+          "type": "technique",
+          "label": "T1071.001 Web Protocols",
+          "relation": "uses",
+          "confidence": 92,
+          "severity": "medium"
+        }
+      ],
+      "attackTechniques": [
+        "T1190",
+        "T1071.001",
+        "T1059.001",
+        "T1055.012",
+        "T1027.002"
+      ],
+      "stages": [
+        {
+          "id": "stage-1",
+          "name": "Entity Disambiguation & Normalization",
+          "description": "Parse raw input indicators into canonical STIX 2.1 cyber observable objects.",
+          "status": "completed",
+          "toolName": "EntityNormalizer",
+          "query": "185.220.101.5\nquantum-defense.org\nCVE-2026-8912",
+          "resultSummary": "3 observables parsed and categorized into canonical schemas.",
+          "evidenceCount": 3,
+          "durationMs": 2,
+          "substeps": [
+            "Validated observable format: 185.220.101.5 (ip)",
+            "Validated observable format: quantum-defense.org (domain)",
+            "Validated observable format: CVE-2026-8912 (cve)"
+          ],
+          "findings": [
+            {
+              "title": "IP",
+              "value": "185.220.101.5",
+              "badge": "IPv4 Observable"
+            },
+            {
+              "title": "DOMAIN",
+              "value": "quantum-defense.org",
+              "badge": "Domain FQDN"
+            },
+            {
+              "title": "CVE",
+              "value": "CVE-2026-8912",
+              "badge": "Vulnerability"
+            }
+          ]
+        },
+        {
+          "id": "stage-2",
+          "name": "IOC Enrichment (Passive DNS & WHOIS)",
+          "description": "Query passive DNS repositories, WHOIS ownership history, and BGP AS routing.",
+          "status": "completed",
+          "toolName": "PassiveDnsIntelligence",
+          "query": "185.220.101.5 & quantum-defense.org",
+          "resultSummary": "Resolved 3 active DNS records. Routed through AS60729 Stiftung Erneuerbare Freiheit (Germany).",
+          "evidenceCount": 5,
+          "durationMs": 448,
+          "substeps": [
+            "Live DNS query: 3 records returned",
+            "RDAP registry lookup: AS60729 Stiftung Erneuerbare Freiheit",
+            "Network owner: Artikel10 e.V"
+          ],
+          "findings": [
+            {
+              "title": "Network ASN",
+              "value": "AS60729 Stiftung Erneuerbare Freiheit",
+              "badge": "Germany"
+            },
+            {
+              "title": "RDAP Organization",
+              "value": "Artikel10 e.V",
+              "badge": "Hosting Provider"
+            },
+            {
+              "title": "DNS Resolution Records",
+              "value": "3 Records Identified",
+              "badge": "320ms latency"
+            }
+          ]
+        },
+        {
+          "id": "stage-3",
+          "name": "Commercial & Community Threat Feeds",
+          "description": "Cross-reference indicators against MISP, AlienVault OTX, ThreatFox, and CISA KEV bulletins.",
+          "status": "completed",
+          "toolName": "ThreatFeedAggregator",
+          "query": "185.220.101.5, quantum-defense.org, CVE-2026-8912",
+          "resultSummary": "Threat intelligence feeds corroborated malicious beaconing and active exploitation in wild.",
+          "evidenceCount": 5,
+          "durationMs": 1551,
+          "substeps": [
+            "Queried ThreatFox open API for IOC match",
+            "Cross-checked CISA Known Exploited Vulnerabilities catalog",
+            "Aggregated MISP Community telemetry pulses"
+          ],
+          "findings": [
+            {
+              "title": "ThreatFox Records",
+              "value": "1 Active Records",
+              "badge": "BlackVenom C2"
+            },
+            {
+              "title": "CISA KEV Status",
+              "value": "CVE-2026-8912 (Listed)",
+              "badge": "Emergency Directive"
+            },
+            {
+              "title": "Reputation Score",
+              "value": "94 / 100 Malicious",
+              "badge": "Critical"
+            }
+          ]
+        },
+        {
+          "id": "stage-4",
+          "name": "MITRE ATT&CK Correlation",
+          "description": "Map observed telemetry and infrastructure characteristics to ATT&CK tactics and techniques.",
+          "status": "completed",
+          "toolName": "AttackMatrixCorrelator",
+          "query": "Observed perimeter traffic, TLS handshakes and exploit headers",
+          "resultSummary": "5 ATT&CK techniques correlated with >85% confidence.",
+          "evidenceCount": 5,
+          "durationMs": 1,
+          "substeps": [
+            "Initial Access: T1190 (Exploit Public-Facing Application)",
+            "Command and Control: T1071.001 (Application Layer Protocol: Web Protocols)",
+            "Execution: T1059.001 (Command and Scripting: PowerShell)",
+            "Defense Evasion: T1055.012 (Process Injection: Process Hollowing)",
+            "Defense Evasion: T1027.002 (Obfuscated Files or Information: Software Packing)"
+          ],
+          "findings": [
+            {
+              "title": "Initial Access",
+              "value": "T1190: Exploit Public-Facing Application",
+              "badge": "Correlated"
+            },
+            {
+              "title": "Command and Control",
+              "value": "T1071.001: Application Layer Protocol: Web Protocols",
+              "badge": "Correlated"
+            },
+            {
+              "title": "Execution",
+              "value": "T1059.001: Command and Scripting: PowerShell",
+              "badge": "Correlated"
+            }
+          ]
+        },
+        {
+          "id": "stage-5",
+          "name": "Infrastructure Analysis & Pivot Expansion",
+          "description": "Graph traversal across co-located IPs, shared TLS certs, and SSH keys.",
+          "status": "completed",
+          "toolName": "GraphInfrastructureExpander",
+          "query": "Pivots on 185.220.101.5 and quantum-defense.org",
+          "resultSummary": "Discovered 2 secondary staging servers and 1 spoofed procurement domain.",
+          "evidenceCount": 7,
+          "durationMs": 0,
+          "substeps": [
+            "Pivoted on TLS certificate serial 4A91B8820",
+            "Discovered secondary staging server 185.220.101.19",
+            "Linked spoofed domain quantum-defense.org"
+          ],
+          "findings": [
+            {
+              "title": "Secondary C2 Node",
+              "value": "185.220.101.19",
+              "badge": "Shared TLS Keypair"
+            },
+            {
+              "title": "Spoofed Domain",
+              "value": "quantum-defense.org",
+              "badge": "Procurement Decoy"
+            },
+            {
+              "title": "JARM Fingerprint",
+              "value": "27d36d2d000d000dc427d36d2d000d",
+              "badge": "BlackVenom Match"
+            }
+          ]
+        },
+        {
+          "id": "stage-6",
+          "name": "Malware Family Signature Correlation",
+          "description": "Compare beaconing payload headers and binary hashes against YARA & static rules.",
+          "status": "completed",
+          "toolName": "MalwareSignatureEngine",
+          "query": "TLS 1.3 Handshake JARM and Dropper SHA256: 7f9a2e88c014...",
+          "resultSummary": "Verified match with BlackVenom RAT v3.2. Proprietary encrypted reverse shell with memory unhooking.",
+          "evidenceCount": 5,
+          "durationMs": 0,
+          "substeps": [
+            "YARA signature match: RULE_APT84_BLACKVENOM_LOADER_V3",
+            "Direct system call invocation detected for NTDLL unhooking",
+            "C2 heartbeat configured over TLS/8443 with randomized jitter"
+          ],
+          "findings": [
+            {
+              "title": "Malware Family",
+              "value": "BlackVenom RAT v3.2",
+              "badge": "Espionage RAT"
+            },
+            {
+              "title": "EDR Evasion",
+              "value": "In-Memory NTDLL Unhooking",
+              "badge": "Verified"
+            },
+            {
+              "title": "Beacon Port",
+              "value": "Port 8443 (HTTPS)",
+              "badge": "Encrypted"
+            }
+          ]
+        },
+        {
+          "id": "stage-7",
+          "name": "Threat Actor Attribution Analysis",
+          "description": "Hypothesis testing and attribution scoring against known APT threat actor profiles.",
+          "status": "completed",
+          "toolName": "AttributionEngine",
+          "query": "Tooling, victimology, and operational timing correlation",
+          "resultSummary": "Primary attribution: APT-84 (RedBanshee / Cobalt Frost) with 91% confidence.",
+          "evidenceCount": 8,
+          "durationMs": 0,
+          "substeps": [
+            "Victimology overlap: Defense and aerospace contractors in Western Europe",
+            "Proprietary tooling match: BlackVenom RAT is exclusively used by APT-84",
+            "Infrastructure registration cadence aligns with historical campaigns"
+          ],
+          "findings": [
+            {
+              "title": "Attributed Group",
+              "value": "APT-84 (RedBanshee)",
+              "badge": "91% Confidence"
+            },
+            {
+              "title": "Associated Campaign",
+              "value": "Operation Arctic Ghost",
+              "badge": "Active"
+            },
+            {
+              "title": "Target Sector",
+              "value": "Defense & Aerospace",
+              "badge": "Critical"
+            }
+          ]
+        },
+        {
+          "id": "stage-8",
+          "name": "Evidence Provenance & Contradiction Verification",
+          "description": "Trace claims to primary sources, evaluate reliability weights, and flag dissenting reports.",
+          "status": "completed",
+          "toolName": "EvidenceVerifier",
+          "query": "Claims provenance check across ingested intelligence sources",
+          "resultSummary": "Verified 3 core analytical claims with immutable source citations. 1 contradiction reviewed & resolved.",
+          "evidenceCount": 9,
+          "durationMs": 0,
+          "substeps": [
+            "Tracked provenance citations for all 3 analytical claims",
+            "Evaluated source reliability index (Mean: 93.4%)",
+            "Flagged and resolved dissenting attribution from CrowdSensor CS-994"
+          ],
+          "findings": [
+            {
+              "title": "Verified Claims",
+              "value": "3 Major Findings",
+              "badge": "Traceable"
+            },
+            {
+              "title": "Dissenting Sources",
+              "value": "1 Resolved Flag",
+              "badge": "Reviewed"
+            },
+            {
+              "title": "Mean Reliability",
+              "value": "93.4%",
+              "badge": "High Provenance"
+            }
+          ]
+        },
+        {
+          "id": "stage-9",
+          "name": "Final Assessment & Action Guidance",
+          "description": "Synthesize evidence-grounded intelligence assessment and actionable containment recommendations.",
+          "status": "completed",
+          "toolName": "ExecutiveSynthesizer",
+          "query": "Generate executive summary, mitigations, and STIX 2.1 package",
+          "resultSummary": "Assessment completed. Formatted into executive dossier with STIX 2.1 export bundle.",
+          "evidenceCount": 4,
+          "durationMs": 0,
+          "substeps": [
+            "Formulated perimeter containment blocklist",
+            "Generated YARA and memory hunting signatures",
+            "Compiled STIX 2.1 bundle for sharing"
+          ],
+          "findings": [
+            {
+              "title": "Severity Rating",
+              "value": "Critical (Severity 5)",
+              "badge": "Immediate Action"
+            },
+            {
+              "title": "Containment State",
+              "value": "Egress Block Recommended",
+              "badge": "Priority 1"
+            },
+            {
+              "title": "Export Package",
+              "value": "STIX 2.1 Bundle Ready",
+              "badge": "Exportable"
+            }
+          ]
+        }
+      ],
+      "agentTraces": [
+        {
+          "id": "tr-1",
+          "timestamp": "22:00:05",
+          "level": "info",
+          "action": "Dispatched investigation task for input: 185.220.101.5\nquantum-defense.org\nCVE-2026-8912",
+          "tool": "Dispatcher"
+        },
+        {
+          "id": "tr-2",
+          "timestamp": "22:00:05",
+          "level": "tool_call",
+          "action": "Parsed 3 observable entities from query",
+          "tool": "EntityNormalizer",
+          "recordsCount": 3
+        },
+        {
+          "id": "tr-3",
+          "timestamp": "22:00:05",
+          "level": "tool_call",
+          "action": "Executing live DNS resolution and RDAP queries for 185.220.101.5",
+          "tool": "DnsIntelligenceResolver",
+          "target": "185.220.101.5"
+        },
+        {
+          "id": "tr-4",
+          "timestamp": "22:00:05",
+          "level": "correlation",
+          "action": "Retrieved BGP ASN: AS60729 Stiftung Erneuerbare Freiheit (Artikel10 e.V) in Germany",
+          "tool": "RdapLookupEngine",
+          "target": "185.220.101.5",
+          "recordsCount": 1
+        },
+        {
+          "id": "tr-5",
+          "timestamp": "22:00:05",
+          "level": "tool_call",
+          "action": "Querying ThreatFox and CISA KEV feeds for indicator matches",
+          "tool": "ThreatFeedAggregator",
+          "target": "185.220.101.5"
+        },
+        {
+          "id": "tr-6",
+          "timestamp": "22:00:07",
+          "level": "correlation",
+          "action": "ThreatFox returned 1 active IOC records; CISA KEV verified",
+          "tool": "ThreatFeedAggregator",
+          "recordsCount": 1
+        },
+        {
+          "id": "tr-7",
+          "timestamp": "22:00:07",
+          "level": "tool_call",
+          "action": "Correlating network telemetry and exploit signatures against MITRE ATT&CK v15",
+          "tool": "AttackMatrixCorrelator"
+        },
+        {
+          "id": "tr-8",
+          "timestamp": "22:00:07",
+          "level": "correlation",
+          "action": "Mapped 5 MITRE ATT&CK techniques with high confidence",
+          "tool": "AttackMatrixCorrelator",
+          "recordsCount": 5
+        },
+        {
+          "id": "tr-9",
+          "timestamp": "22:00:07",
+          "level": "tool_call",
+          "action": "Expanding relationship graph across shared TLS certificates and co-located subnets",
+          "tool": "GraphInfrastructureExpander",
+          "target": "185.220.101.5"
+        },
+        {
+          "id": "tr-10",
+          "timestamp": "22:00:07",
+          "level": "correlation",
+          "action": "Discovered secondary staging IP 185.220.101.19 via shared SSL cert serial 4A91B8820",
+          "tool": "GraphInfrastructureExpander",
+          "target": "185.220.101.19",
+          "recordsCount": 2
+        },
+        {
+          "id": "tr-11",
+          "timestamp": "22:00:07",
+          "level": "tool_call",
+          "action": "Evaluating binary hashes and in-memory execution signatures",
+          "tool": "MalwareSignatureEngine",
+          "target": "BlackVenom RAT"
+        },
+        {
+          "id": "tr-12",
+          "timestamp": "22:00:07",
+          "level": "tool_call",
+          "action": "Evaluating actor attribution hypothesis based on tooling and victimology",
+          "tool": "AttributionEngine",
+          "target": "APT-84"
+        },
+        {
+          "id": "tr-13",
+          "timestamp": "22:00:07",
+          "level": "conflict",
+          "action": "Detected conflicting proxy farm attribution in source CS-994 (SilverFox vs APT-84)",
+          "tool": "EvidenceVerifier",
+          "details": "Heuristic resolved: APT-84 rented commercial VPS subnets within AS49870."
+        },
+        {
+          "id": "tr-14",
+          "timestamp": "22:00:07",
+          "level": "verification",
+          "action": "Verified 3 major claims across 9 primary sources with 93.4% mean reliability",
+          "tool": "EvidenceVerifier",
+          "recordsCount": 3
+        },
+        {
+          "id": "tr-15",
+          "timestamp": "22:00:07",
+          "level": "completed",
+          "action": "Generated final assessment and emergency mitigation playbook for INV-2026-8246",
+          "tool": "ExecutiveSynthesizer"
+        }
+      ],
+      "recommendedActions": [
+        "Emergency perimeter firewall block on IPv4 185.220.101.5 and subnet range.",
+        "Sinkhole DNS resolution for domain quantum-defense.org across all enterprise resolvers.",
+        "Deploy emergency patch for CVE-2026-8912 per CISA Emergency Directive.",
+        "Execute memory sweep for TLS JARM 27d36d2d000d000dc427d36d2d000d across all perimeter proxies.",
+        "Share STIX 2.1 intelligence bundle with sectoral ISAC and national CERT coordinators."
+      ]
+    }
+  },
+  "iocs": {
+    "ioc-1": {
+      "id": "ioc-1",
+      "indicator": "185.220.101.5",
+      "type": "ip",
+      "severity": "critical",
+      "confidence": 94,
+      "firstObserved": "2026-08-12 04:22:19 UTC",
+      "lastObserved": "2026-09-15 22:14:00 UTC",
+      "asn": "AS49870 (Solaris Networks BV)",
+      "country": "Netherlands (NL)",
+      "reputationScore": 94,
+      "associatedMalware": [
+        "BlackVenom RAT v3.2",
+        "CobaltLoader"
+      ],
+      "associatedActors": [
+        "APT-84 (RedBanshee)"
+      ],
+      "associatedCampaigns": [
+        "Operation Arctic Ghost"
+      ],
+      "passiveDnsCount": 7,
+      "whoisSummary": {
+        "registrar": "Njalla Privacy Shield (1337 Services LLC)",
+        "created": "2026-07-15",
+        "expires": "2027-07-15",
+        "registrantOrg": "Withheld for Privacy Purpose"
+      },
+      "dnsHistory": [
+        {
+          "recordType": "A",
+          "value": "quantum-defense.org",
+          "firstSeen": "2026-09-01",
+          "lastSeen": "2026-09-15"
+        },
+        {
+          "recordType": "A",
+          "value": "portal-sync.quantum-defense.org",
+          "firstSeen": "2026-09-03",
+          "lastSeen": "2026-09-14"
+        },
+        {
+          "recordType": "A",
+          "value": "update.aerocorp-cloud.com",
+          "firstSeen": "2026-08-20",
+          "lastSeen": "2026-08-30"
+        },
+        {
+          "recordType": "A",
+          "value": "stage2.cdn-securegate.net",
+          "firstSeen": "2026-08-12",
+          "lastSeen": "2026-08-22"
+        }
+      ],
+      "relatedIocs": [
+        {
+          "indicator": "quantum-defense.org",
+          "type": "domain",
+          "relation": "resolves_to",
+          "confidence": 98
+        },
+        {
+          "indicator": "185.220.101.19",
+          "type": "ip",
+          "relation": "shared_tls_cert",
+          "confidence": 91
+        },
+        {
+          "indicator": "portal-sync.quantum-defense.org",
+          "type": "domain",
+          "relation": "subdomain_of",
+          "confidence": 95
+        },
+        {
+          "indicator": "7f9a2e88c014... (SHA256)",
+          "type": "hash",
+          "relation": "hosted_payload",
+          "confidence": 96
+        }
+      ],
+      "evidenceIds": [
+        "ev-101",
+        "ev-102",
+        "ev-103",
+        "ev-201"
+      ]
+    },
+    "ioc-2": {
+      "id": "ioc-2",
+      "indicator": "quantum-defense.org",
+      "type": "domain",
+      "severity": "high",
+      "confidence": 96,
+      "firstObserved": "2026-09-01 10:14:02 UTC",
+      "lastObserved": "2026-09-15 21:50:11 UTC",
+      "country": "Netherlands (NL)",
+      "registrar": "Njalla Privacy Shield",
+      "reputationScore": 92,
+      "associatedMalware": [
+        "BlackVenom RAT v3.2"
+      ],
+      "associatedActors": [
+        "APT-84 (RedBanshee)"
+      ],
+      "associatedCampaigns": [
+        "Operation Arctic Ghost"
+      ],
+      "passiveDnsCount": 4,
+      "whoisSummary": {
+        "registrar": "Njalla (1337 Services LLC)",
+        "created": "2026-08-29",
+        "expires": "2027-08-29",
+        "registrantOrg": "Redacted Privacy"
+      },
+      "dnsHistory": [
+        {
+          "recordType": "A",
+          "value": "185.220.101.5",
+          "firstSeen": "2026-09-01",
+          "lastSeen": "2026-09-15"
+        },
+        {
+          "recordType": "MX",
+          "value": "mail.quantum-defense.org",
+          "firstSeen": "2026-09-02",
+          "lastSeen": "2026-09-15"
+        }
+      ],
+      "relatedIocs": [
+        {
+          "indicator": "185.220.101.5",
+          "type": "ip",
+          "relation": "resolves_to",
+          "confidence": 98
+        },
+        {
+          "indicator": "CVE-2026-8912",
+          "type": "cve",
+          "relation": "weaponizes",
+          "confidence": 94
+        }
+      ],
+      "evidenceIds": [
+        "ev-201",
+        "ev-202"
+      ]
+    },
+    "ioc-3": {
+      "id": "ioc-3",
+      "indicator": "7f9a2e88c014bb98d41e712398fa21e90b88d2031ac82b99",
+      "type": "hash",
+      "severity": "critical",
+      "confidence": 98,
+      "firstObserved": "2026-08-25 14:00:23 UTC",
+      "lastObserved": "2026-09-14 18:22:00 UTC",
+      "reputationScore": 99,
+      "associatedMalware": [
+        "BlackVenom RAT v3.2"
+      ],
+      "associatedActors": [
+        "APT-84 (RedBanshee)"
+      ],
+      "associatedCampaigns": [
+        "Operation Arctic Ghost"
+      ],
+      "passiveDnsCount": 0,
+      "whoisSummary": {
+        "registrar": "N/A",
+        "created": "N/A",
+        "expires": "N/A",
+        "registrantOrg": "Executable Binary / DLL"
+      },
+      "dnsHistory": [],
+      "relatedIocs": [
+        {
+          "indicator": "185.220.101.5",
+          "type": "ip",
+          "relation": "communicates_with",
+          "confidence": 98
+        },
+        {
+          "indicator": "185.220.101.19",
+          "type": "ip",
+          "relation": "fallback_c2",
+          "confidence": 90
+        }
+      ],
+      "evidenceIds": [
+        "ev-103"
+      ]
+    },
+    "ioc-4": {
+      "id": "ioc-4",
+      "indicator": "194.26.29.112",
+      "type": "ip",
+      "severity": "high",
+      "confidence": 88,
+      "firstObserved": "2026-08-01 09:30:00 UTC",
+      "lastObserved": "2026-09-14 16:11:00 UTC",
+      "asn": "AS57523 (Chang Way Technologies)",
+      "country": "Hong Kong (HK)",
+      "reputationScore": 88,
+      "associatedMalware": [
+        "StealthStealer v2"
+      ],
+      "associatedActors": [
+        "VelvetChollima"
+      ],
+      "associatedCampaigns": [
+        "Campaign Solstice"
+      ],
+      "passiveDnsCount": 11,
+      "whoisSummary": {
+        "registrar": "Alibaba Cloud Computing",
+        "created": "2025-11-10",
+        "expires": "2026-11-10",
+        "registrantOrg": "Chang Way Tech"
+      },
+      "dnsHistory": [
+        {
+          "recordType": "A",
+          "value": "swift-wire-auth.com",
+          "firstSeen": "2026-08-10",
+          "lastSeen": "2026-09-14"
+        }
+      ],
+      "relatedIocs": [
+        {
+          "indicator": "swift-wire-auth.com",
+          "type": "domain",
+          "relation": "resolves_to",
+          "confidence": 95
+        }
+      ],
+      "evidenceIds": [
+        "ev-401"
+      ]
+    },
+    "ioc-1790266955156": {
+      "id": "ioc-1790266955156",
+      "indicator": "8.8.8.8",
+      "type": "ip",
+      "severity": "high",
+      "confidence": 90,
+      "firstObserved": "2026-09-24 16:22:35 UTC",
+      "lastObserved": "2026-09-24 16:22:35 UTC",
+      "asn": "AS49870 (Solaris Networks BV)",
+      "country": "Netherlands (NL)",
+      "reputationScore": 88,
+      "associatedMalware": [
+        "BlackVenom RAT v3.2"
+      ],
+      "associatedActors": [
+        "APT-84 (RedBanshee)"
+      ],
+      "associatedCampaigns": [
+        "Operation Arctic Ghost"
+      ],
+      "passiveDnsCount": 1,
+      "whoisSummary": {
+        "registrar": "Public Registrar",
+        "created": "2026-01-01",
+        "expires": "2027-01-01",
+        "registrantOrg": "Solaris Network Infrastructure"
+      },
+      "dnsHistory": [
+        {
+          "recordType": "PTR",
+          "value": "dns.google",
+          "firstSeen": "2026-09-24 16:22:31 UTC",
+          "lastSeen": "2026-09-24 16:22:31 UTC"
+        }
+      ],
+      "relatedIocs": [
+        {
+          "indicator": "dns.google",
+          "type": "domain",
+          "relation": "resolves_to",
+          "confidence": 95
+        }
+      ],
+      "evidenceIds": [
+        "ev-dns-live",
+        "ev-rdap-live"
+      ]
+    }
+  },
+  "threatActors": {
+    "actor-1": {
+      "id": "actor-1",
+      "name": "APT-84",
+      "aliases": [
+        "RedBanshee",
+        "Cobalt Frost",
+        "TEMP.Tundra",
+        "UAC-0098"
+      ],
+      "origin": "Eastern Europe / State-Sponsored Hypothesis",
+      "motivations": [
+        "Strategic Espionage",
+        "Defense Technology Exfiltration",
+        "Critical Infrastructure Sabotage"
+      ],
+      "targetedSectors": [
+        "Aerospace & Defense",
+        "Energy & Power Grids",
+        "Government Agencies",
+        "Telecommunications"
+      ],
+      "targetedRegions": [
+        "Western Europe",
+        "North America",
+        "Baltic States",
+        "East Asia"
+      ],
+      "firstObserved": "2021-04-10",
+      "lastActive": "2026-09-15",
+      "confidence": "high",
+      "associatedMalware": [
+        "BlackVenom RAT v3.2",
+        "CobaltLoader",
+        "ShadowInjector",
+        "TundraWiper"
+      ],
+      "campaigns": [
+        "Operation Arctic Ghost",
+        "Operation DeepVolt",
+        "Titan Harvest"
+      ],
+      "techniques": [
+        "T1190",
+        "T1059.001",
+        "T1071.001",
+        "T1566.002",
+        "T1027.002",
+        "T1083",
+        "T1055"
+      ],
+      "infrastructureCount": {
+        "ips": 38,
+        "domains": 29
+      },
+      "description": "APT-84 (RedBanshee) is a highly capable advanced persistent threat group known for sophisticated multi-stage intrusions against defense industrial base contractors. The group frequently acquires commercial VPS subnets, leverages custom encrypted RAT variants with dynamic JARM fingerprints, and exploits public-facing gateway zero-days to bypass MFA perimeters.",
+      "sourcesCount": 18,
+      "evidenceStrength": 91
+    },
+    "actor-2": {
+      "id": "actor-2",
+      "name": "VelvetChollima",
+      "aliases": [
+        "Labyrinth Chollima",
+        "NickelAcademy",
+        "CryptoJackal"
+      ],
+      "origin": "East Asia / State-Sponsored Financial",
+      "motivations": [
+        "Financial Theft",
+        "Cryptocurrency Laundering",
+        "SWIFT Interception"
+      ],
+      "targetedSectors": [
+        "Financial Services",
+        "Cryptocurrency Exchanges",
+        "Defense",
+        "Fintech"
+      ],
+      "targetedRegions": [
+        "Global",
+        "Southeast Asia",
+        "North America"
+      ],
+      "firstObserved": "2019-08-15",
+      "lastActive": "2026-09-14",
+      "confidence": "high",
+      "associatedMalware": [
+        "StealthStealer v2",
+        "BankerLoader",
+        "GhostRAT-Variant"
+      ],
+      "campaigns": [
+        "Campaign Solstice",
+        "Operation CoinSweep"
+      ],
+      "techniques": [
+        "T1566.001",
+        "T1059.003",
+        "T1021.001",
+        "T1078"
+      ],
+      "infrastructureCount": {
+        "ips": 52,
+        "domains": 44
+      },
+      "description": "VelvetChollima specializes in revenue generation through high-value crypto heists and SWIFT terminal intrusions, often deploying legitimate job-lure lures to breach internal engineering workstations.",
+      "sourcesCount": 22,
+      "evidenceStrength": 89
+    },
+    "actor-3": {
+      "id": "actor-3",
+      "name": "PhantomPanda",
+      "aliases": [
+        "Bronze Riverside",
+        "RedHydra",
+        "MustangSilk"
+      ],
+      "origin": "Asia-Pacific",
+      "motivations": [
+        "Economic Espionage",
+        "Intellectual Property Theft",
+        "Diplomatic Surveillance"
+      ],
+      "targetedSectors": [
+        "Semiconductors",
+        "Renewable Energy",
+        "Foreign Ministries",
+        "Maritime Transport"
+      ],
+      "targetedRegions": [
+        "Indo-Pacific",
+        "European Union",
+        "United States"
+      ],
+      "firstObserved": "2018-02-12",
+      "lastActive": "2026-09-11",
+      "confidence": "medium",
+      "associatedMalware": [
+        "SilkWeaver Loader",
+        "PlugX Mod 2026",
+        "ShadowPad 4.0"
+      ],
+      "campaigns": [
+        "Operation Maritime Watch",
+        "Project Silicon Shield"
+      ],
+      "techniques": [
+        "T1190",
+        "T1078",
+        "T1003.001",
+        "T1041"
+      ],
+      "infrastructureCount": {
+        "ips": 64,
+        "domains": 58
+      },
+      "description": "Focuses on persistent stealth operations and long-term intellectual property exfiltration from advanced semiconductor and maritime engineering firms.",
+      "sourcesCount": 16,
+      "evidenceStrength": 82
+    }
+  },
+  "malware": {
+    "malware-1": {
+      "id": "malware-1",
+      "name": "BlackVenom RAT",
+      "type": "Remote Access Trojan (RAT) / C2 Agent",
+      "firstObserved": "2024-11-05",
+      "lastObserved": "2026-09-15",
+      "associatedActors": [
+        "APT-84 (RedBanshee)"
+      ],
+      "associatedCampaigns": [
+        "Operation Arctic Ghost",
+        "Operation DeepVolt"
+      ],
+      "capabilities": [
+        "Encrypted TLS 1.3 C2 beaconing with custom JARM mimicry",
+        "In-memory unhooking (EDR bypass via direct system calls)",
+        "Token manipulation and LSASS credential harvesting",
+        "Dynamic reverse SOCKS5 proxy tunneling",
+        "Encrypted screenshot capture and keylogging",
+        "Process hollowing into svchost.exe and runtimebroker.exe"
+      ],
+      "techniques": [
+        "T1059.001",
+        "T1055.012",
+        "T1071.001",
+        "T1003.001",
+        "T1090.003"
+      ],
+      "relatedCves": [
+        "CVE-2026-8912",
+        "CVE-2025-50211"
+      ],
+      "activeC2Nodes": 8,
+      "yaraRules": [
+        "RULE_APT84_BLACKVENOM_LOADER_V3",
+        "RULE_BLACKVENOM_JARM_HANDSHAKE_2026",
+        "RULE_BLACKVENOM_MEMORY_UNHOOK"
+      ],
+      "hashes": [
+        "7f9a2e88c014bb98d41e712398fa21e90b88d2031ac82b99",
+        "3b92f9810ac2552881023a9d18b4562091c784910ea091bc",
+        "19a842b100dc8927810398bbfae10982736192837162981a"
+      ],
+      "evidenceCount": 14,
+      "confidence": 96
+    },
+    "malware-2": {
+      "id": "malware-2",
+      "name": "StealthStealer v2",
+      "type": "Infostealer / Browser Token Harvester",
+      "firstObserved": "2025-03-18",
+      "lastObserved": "2026-09-14",
+      "associatedActors": [
+        "VelvetChollima"
+      ],
+      "associatedCampaigns": [
+        "Campaign Solstice"
+      ],
+      "capabilities": [
+        "Chromium and Gecko SQLite master key decryption",
+        "Cold cryptocurrency wallet file extraction (.dat, seed phrases)",
+        "Telegram, Discord, and Slack session cookie hijacking",
+        "Exfiltration via multi-part POST to Telegram Bot API and HTTPS C2"
+      ],
+      "techniques": [
+        "T1555.003",
+        "T1005",
+        "T1041",
+        "T1071.001"
+      ],
+      "relatedCves": [],
+      "activeC2Nodes": 14,
+      "yaraRules": [
+        "RULE_STEALTH_STEALER_SQLITE_HARVEST",
+        "RULE_VELVET_TELEGRAM_EXFIL"
+      ],
+      "hashes": [
+        "a87b1c4d92e8172635481920394857162534891029384756"
+      ],
+      "evidenceCount": 9,
+      "confidence": 89
+    },
+    "malware-3": {
+      "id": "malware-3",
+      "name": "DarkLocker Ransomware",
+      "type": "Double-Extortion Ransomware",
+      "firstObserved": "2025-09-01",
+      "lastObserved": "2026-09-10",
+      "associatedActors": [
+        "FIN-3382 Syndicate"
+      ],
+      "associatedCampaigns": [
+        "Operation BlackCipher"
+      ],
+      "capabilities": [
+        "ChaCha20-Poly1305 multi-threaded file encryption",
+        "Volume Shadow Copy deletion (vssadmin / shadowcopy delete)",
+        "Local network SMB broadcast enumeration",
+        "Tor onion leak site automated staging"
+      ],
+      "techniques": [
+        "T1486",
+        "T1490",
+        "T1021.002",
+        "T1070.004"
+      ],
+      "relatedCves": [
+        "CVE-2026-4401"
+      ],
+      "activeC2Nodes": 4,
+      "yaraRules": [
+        "RULE_DARKLOCKER_PAYLOAD_CRYPTO_ROUTINE"
+      ],
+      "hashes": [
+        "9e32a10b48f1029384756102938475610293847561029384"
+      ],
+      "evidenceCount": 12,
+      "confidence": 92
+    }
+  },
+  "campaigns": {
+    "camp-1": {
+      "id": "camp-1",
+      "name": "Operation Arctic Ghost",
+      "codename": "OP-ARCTIC-GHOST",
+      "status": "active",
+      "targetSectors": [
+        "Aerospace & Defense",
+        "Energy Sector",
+        "Government Defense Contractors"
+      ],
+      "targetCountries": [
+        "United States",
+        "United Kingdom",
+        "Norway",
+        "Germany",
+        "Poland"
+      ],
+      "associatedActors": [
+        "APT-84 (RedBanshee)"
+      ],
+      "associatedMalware": [
+        "BlackVenom RAT v3.2",
+        "CobaltLoader"
+      ],
+      "cvesExploited": [
+        "CVE-2026-8912",
+        "CVE-2025-50211"
+      ],
+      "startDate": "2026-06-15",
+      "lastActivity": "2026-09-15",
+      "evidenceStrength": 92,
+      "killChainPhases": [
+        {
+          "phase": "Reconnaissance & Weaponization",
+          "description": "Passive scanning of defense contractor IP ranges for unpatched edge gateways; weaponizing CVE-2026-8912 exploit wrapper.",
+          "techniques": [
+            "T1595.002",
+            "T1588.006"
+          ]
+        },
+        {
+          "phase": "Initial Access",
+          "description": "Exploitation of external EdgeSecure gateways and spearphishing emails masquerading as procurement notifications with quantum-defense.org links.",
+          "techniques": [
+            "T1190",
+            "T1566.002"
+          ]
+        },
+        {
+          "phase": "Execution & Defense Evasion",
+          "description": "Payload injection into svchost processes; custom JARM TLS handshakes to circumvent perimeter IDS/IPS inspection.",
+          "techniques": [
+            "T1059.001",
+            "T1055.012",
+            "T1027.002"
+          ]
+        },
+        {
+          "phase": "Command and Control",
+          "description": "Encrypted heartbeat beacons over TLS port 8443 back to 185.220.101.5 and secondary staging node 185.220.101.19.",
+          "techniques": [
+            "T1071.001",
+            "T1573.002"
+          ]
+        },
+        {
+          "phase": "Exfiltration",
+          "description": "Compression and staging of CAD diagrams and defense project documentation using encrypted RAR archives split into 10MB chunks.",
+          "techniques": [
+            "T1560.001",
+            "T1041"
+          ]
+        }
+      ]
+    },
+    "camp-2": {
+      "id": "camp-2",
+      "name": "Campaign Solstice",
+      "codename": "SOLSTICE-CRYPTO-26",
+      "status": "active",
+      "targetSectors": [
+        "Cryptocurrency Exchanges",
+        "Institutional DeFi Funds",
+        "Fintech"
+      ],
+      "targetCountries": [
+        "Singapore",
+        "Japan",
+        "United States",
+        "Switzerland"
+      ],
+      "associatedActors": [
+        "VelvetChollima"
+      ],
+      "associatedMalware": [
+        "StealthStealer v2"
+      ],
+      "cvesExploited": [],
+      "startDate": "2026-02-01",
+      "lastActivity": "2026-09-14",
+      "evidenceStrength": 88,
+      "killChainPhases": [
+        {
+          "phase": "Initial Access",
+          "description": "LinkedIn recruiter impersonation delivering malicious Electron applications masquerading as trading interview coding tests.",
+          "techniques": [
+            "T1566.001",
+            "T1204.002"
+          ]
+        },
+        {
+          "phase": "Credential Harvesting",
+          "description": "Harvesting browser master passwords, private wallet seeds, and active 2FA browser session tokens.",
+          "techniques": [
+            "T1555.003",
+            "T1005"
+          ]
+        }
+      ]
+    }
+  },
+  "cves": {
+    "CVE-2026-8912": {
+      "id": "CVE-2026-8912",
+      "title": "Enterprise Edge Gateway Unauthenticated Remote Code Execution",
+      "cvss": 9.8,
+      "severity": "critical",
+      "publishedDate": "2026-08-25",
+      "modifiedDate": "2026-09-08",
+      "cisaKev": true,
+      "knownExploitation": true,
+      "affectsOrganization": "confirmed",
+      "affectedProducts": [
+        "EdgeSecure Gateway OS v11.2 - v12.4",
+        "SecureGate Concentrator Appliance Model 4000/5000"
+      ],
+      "associatedMalware": [
+        "BlackVenom RAT v3.2",
+        "CobaltLoader"
+      ],
+      "associatedActors": [
+        "APT-84 (RedBanshee)"
+      ],
+      "associatedCampaigns": [
+        "Operation Arctic Ghost"
+      ],
+      "epssScore": 0.941,
+      "description": "Improper input neutralization in the HTTP management interface listener on port 8443 enables remote, unauthenticated attackers to execute arbitrary shell commands with root privileges via a crafted HTTP POST request.",
+      "remediation": "Apply vendor emergency firmware patch v12.4.2 immediately. Disable WAN-facing administrative management endpoints or enforce strict IP allowlisting at perimeter ACLs."
+    },
+    "CVE-2026-4401": {
+      "id": "CVE-2026-4401",
+      "title": "SMBv3 Protocol Buffer Overflow Denial of Service and Pre-Auth RCE",
+      "cvss": 8.8,
+      "severity": "high",
+      "publishedDate": "2026-06-14",
+      "modifiedDate": "2026-08-19",
+      "cisaKev": true,
+      "knownExploitation": true,
+      "affectsOrganization": "none",
+      "affectedProducts": [
+        "Legacy Windows Server 2019/2022 (Unpatched KB910291)"
+      ],
+      "associatedMalware": [
+        "DarkLocker Ransomware"
+      ],
+      "associatedActors": [
+        "FIN-3382 Syndicate"
+      ],
+      "associatedCampaigns": [
+        "Operation BlackCipher"
+      ],
+      "epssScore": 0.812,
+      "description": "A vulnerability in the handling of SMBv3 compressed packets allows an unauthenticated attacker to cause heap exhaustion or execute remote code.",
+      "remediation": "Block TCP port 445 at external network perimeters and deploy patch KB910291 across all domain controllers."
+    },
+    "CVE-2026-2189": {
+      "id": "CVE-2026-2189",
+      "title": "OpenSSH RegreSSHion v2 Race Condition in Signal Handler",
+      "cvss": 7.5,
+      "severity": "high",
+      "publishedDate": "2026-07-02",
+      "modifiedDate": "2026-07-28",
+      "cisaKev": false,
+      "knownExploitation": false,
+      "affectsOrganization": "suspected",
+      "affectedProducts": [
+        "OpenSSH 8.5p1 through 9.8p1 on glibc Linux"
+      ],
+      "associatedMalware": [],
+      "associatedActors": [
+        "PhantomPanda (Targeted Scanning)"
+      ],
+      "associatedCampaigns": [],
+      "epssScore": 0.315,
+      "description": "A signal handler race condition in OpenSSH server (sshd) allows unauthenticated remote attackers to execute code as root under specific ASLR layout conditions.",
+      "remediation": "Update OpenSSH to version 9.8p2 or set LoginGraceTime to 0 in sshd_config to prevent the timeout signal handler trigger."
+    },
+    "CVE-2025-50211": {
+      "id": "CVE-2025-50211",
+      "title": "Enterprise VPN Client Local Privilege Escalation via Named Pipe",
+      "cvss": 6.8,
+      "severity": "medium",
+      "publishedDate": "2025-11-20",
+      "modifiedDate": "2026-02-14",
+      "cisaKev": false,
+      "knownExploitation": true,
+      "affectsOrganization": "none",
+      "affectedProducts": [
+        "AeroConnect VPN Desktop Client < v4.9.1"
+      ],
+      "associatedMalware": [
+        "BlackVenom RAT v3.2"
+      ],
+      "associatedActors": [
+        "APT-84 (RedBanshee)"
+      ],
+      "associatedCampaigns": [
+        "Operation Arctic Ghost"
+      ],
+      "epssScore": 0.128,
+      "description": "Insecure discretionary access control lists (DACLs) on local RPC named pipes allow authenticated standard users to execute binaries with SYSTEM privileges.",
+      "remediation": "Upgrade AeroConnect VPN client to release v4.9.2 or higher."
+    }
+  },
+  "attackMatrix": {
+    "Initial Access": [
+      {
+        "id": "T1190",
+        "name": "Exploit Public-Facing Application",
+        "tactic": "Initial Access",
+        "description": "Adversaries may attempt to exploit a weakness in an Internet-facing computer or program using software, package, or service bugs.",
+        "associatedActors": [
+          "APT-84 (RedBanshee)",
+          "PhantomPanda"
+        ],
+        "associatedMalware": [
+          "CobaltLoader",
+          "BlackVenom RAT v3.2"
+        ],
+        "observedCampaigns": [
+          "Operation Arctic Ghost"
+        ],
+        "evidenceCount": 18,
+        "detectionGuidance": "Monitor application logs for unexpected process spawns, abnormal POST payloads, and memory segmentation crashes."
+      },
+      {
+        "id": "T1566.002",
+        "name": "Spearphishing Link",
+        "tactic": "Initial Access",
+        "description": "Adversaries may send spearphishing emails with a malicious link in an attempt to gain access or direct victims to credential-harvesting sites.",
+        "associatedActors": [
+          "APT-84 (RedBanshee)",
+          "VelvetChollima"
+        ],
+        "associatedMalware": [
+          "BlackVenom RAT v3.2",
+          "StealthStealer v2"
+        ],
+        "observedCampaigns": [
+          "Operation Arctic Ghost",
+          "Campaign Solstice"
+        ],
+        "evidenceCount": 24,
+        "detectionGuidance": "Correlate perimeter mail gateway logs with URL sandbox detonation verdicts and domain age intelligence."
+      }
+    ],
+    "Execution": [
+      {
+        "id": "T1059.001",
+        "name": "Command and Scripting: PowerShell",
+        "tactic": "Execution",
+        "description": "Adversaries may abuse PowerShell commands and scripts for execution. PowerShell is a powerful interactive command-line interface and scripting language.",
+        "associatedActors": [
+          "APT-84 (RedBanshee)",
+          "FIN-3382 Syndicate"
+        ],
+        "associatedMalware": [
+          "BlackVenom RAT v3.2"
+        ],
+        "observedCampaigns": [
+          "Operation Arctic Ghost"
+        ],
+        "evidenceCount": 31,
+        "detectionGuidance": "Enable Script Block Logging (Event ID 4104) and transcription; alert on Base64 encoded commands and non-standard execution bypass flags."
+      },
+      {
+        "id": "T1204.002",
+        "name": "User Execution: Malicious File",
+        "tactic": "Execution",
+        "description": "An adversary may rely upon specific actions by a user in order to gain execution, such as opening an email attachment or clicking a lure binary.",
+        "associatedActors": [
+          "VelvetChollima"
+        ],
+        "associatedMalware": [
+          "StealthStealer v2"
+        ],
+        "observedCampaigns": [
+          "Campaign Solstice"
+        ],
+        "evidenceCount": 15,
+        "detectionGuidance": "Monitor process creation events where office binaries or archive utilities spawn scripting interpreters."
+      }
+    ],
+    "Defense Evasion": [
+      {
+        "id": "T1027.002",
+        "name": "Obfuscated Files or Information: Software Packing",
+        "tactic": "Defense Evasion",
+        "description": "Adversaries may compress, encrypt, or modify an executable to make it more difficult to analyze and evade static detection signatures.",
+        "associatedActors": [
+          "APT-84 (RedBanshee)"
+        ],
+        "associatedMalware": [
+          "BlackVenom RAT v3.2"
+        ],
+        "observedCampaigns": [
+          "Operation Arctic Ghost"
+        ],
+        "evidenceCount": 12,
+        "detectionGuidance": "Calculate section entropy on PE binaries; entropy > 7.2 typically indicates packed code requiring sandbox unpack."
+      },
+      {
+        "id": "T1055.012",
+        "name": "Process Injection: Process Hollowing",
+        "tactic": "Defense Evasion",
+        "description": "Adversaries may inject malicious code into suspended and hollowed processes in order to evade process-based defenses.",
+        "associatedActors": [
+          "APT-84 (RedBanshee)"
+        ],
+        "associatedMalware": [
+          "BlackVenom RAT v3.2"
+        ],
+        "observedCampaigns": [
+          "Operation Arctic Ghost"
+        ],
+        "evidenceCount": 19,
+        "detectionGuidance": "Monitor for NtUnmapViewOfSection followed by WriteProcessMemory into legitimate system processes like svchost.exe."
+      }
+    ],
+    "Command and Control": [
+      {
+        "id": "T1071.001",
+        "name": "Application Layer Protocol: Web Protocols",
+        "tactic": "Command and Control",
+        "description": "Adversaries may communicate using application layer protocols (e.g., HTTP/HTTPS) to avoid detection through firewalls and proxies.",
+        "associatedActors": [
+          "APT-84 (RedBanshee)",
+          "VelvetChollima",
+          "PhantomPanda"
+        ],
+        "associatedMalware": [
+          "BlackVenom RAT v3.2",
+          "StealthStealer v2"
+        ],
+        "observedCampaigns": [
+          "Operation Arctic Ghost",
+          "Campaign Solstice"
+        ],
+        "evidenceCount": 42,
+        "detectionGuidance": "Inspect TLS JA3/JARM fingerprints, periodic beacon intervals with low jitter, and requests to high-risk dynamic DNS hostnames."
+      },
+      {
+        "id": "T1573.002",
+        "name": "Encrypted Channel: Asymmetric Cryptography",
+        "tactic": "Command and Control",
+        "description": "Adversaries may employ a known encryption algorithm with an asymmetric key to conceal command and control traffic.",
+        "associatedActors": [
+          "APT-84 (RedBanshee)"
+        ],
+        "associatedMalware": [
+          "BlackVenom RAT v3.2"
+        ],
+        "observedCampaigns": [
+          "Operation Arctic Ghost"
+        ],
+        "evidenceCount": 16,
+        "detectionGuidance": "Track self-signed certificates with randomized CN fields or subject names mimicking legitimate vendor domains."
+      }
+    ],
+    "Exfiltration": [
+      {
+        "id": "T1041",
+        "name": "Exfiltration Over C2 Channel",
+        "tactic": "Exfiltration",
+        "description": "Adversaries may steal data by exfiltrating it over an existing command and control channel rather than creating a separate dedicated exfiltration connection.",
+        "associatedActors": [
+          "APT-84 (RedBanshee)",
+          "PhantomPanda"
+        ],
+        "associatedMalware": [
+          "BlackVenom RAT v3.2"
+        ],
+        "observedCampaigns": [
+          "Operation Arctic Ghost"
+        ],
+        "evidenceCount": 14,
+        "detectionGuidance": "Flag long-duration outbound connections with heavy egress-to-ingress byte ratios exceeding 10:1."
+      }
+    ]
+  },
+  "graphNodes": {
+    "node-apt84": {
+      "id": "node-apt84",
+      "data": {
+        "id": "node-apt84",
+        "label": "APT-84 (RedBanshee)",
+        "type": "actor",
+        "severity": "critical",
+        "confidence": 91,
+        "subtitle": "Attributed Threat Group",
+        "isTarget": false,
+        "details": {
+          "aliases": [
+            "Cobalt Frost",
+            "TEMP.Tundra"
+          ],
+          "origin": "Eastern Europe / State-Sponsored",
+          "activeSince": "2021",
+          "motivation": "Defense Espionage & Sabotage",
+          "evidenceCount": 18
+        }
+      },
+      "position": {
+        "x": 380,
+        "y": 180
+      }
+    },
+    "node-camp-arctic": {
+      "id": "node-camp-arctic",
+      "data": {
+        "id": "node-camp-arctic",
+        "label": "Operation Arctic Ghost",
+        "type": "campaign",
+        "severity": "high",
+        "confidence": 88,
+        "subtitle": "Active Cyber Espionage Campaign",
+        "details": {
+          "targets": "Defense Industrial Base, Aerospace, NATO allies",
+          "status": "Active (Q3 2026)",
+          "evidenceCount": 12
+        }
+      },
+      "position": {
+        "x": 680,
+        "y": 120
+      }
+    },
+    "node-target-aero": {
+      "id": "node-target-aero",
+      "data": {
+        "id": "node-target-aero",
+        "label": "AeroSpace Dynamics Ltd",
+        "type": "organization",
+        "severity": "high",
+        "confidence": 95,
+        "subtitle": "Target Organization (Defense Tier-1)",
+        "details": {
+          "industry": "Aerospace & Defense Contractor",
+          "location": "United Kingdom / Germany",
+          "compromiseStatus": "Perimeter Blocked"
+        }
+      },
+      "position": {
+        "x": 960,
+        "y": 120
+      }
+    },
+    "node-malware-bv": {
+      "id": "node-malware-bv",
+      "data": {
+        "id": "node-malware-bv",
+        "label": "BlackVenom RAT v3.2",
+        "type": "malware",
+        "severity": "critical",
+        "confidence": 96,
+        "subtitle": "Proprietary In-Memory C2 Agent",
+        "details": {
+          "family": "BlackVenom",
+          "capabilities": "TLS 1.3 Beaconing, Memory Unhooking, LSASS Dump",
+          "yaraMatch": "RULE_APT84_BLACKVENOM_LOADER_V3",
+          "evidenceCount": 14
+        }
+      },
+      "position": {
+        "x": 140,
+        "y": 320
+      }
+    },
+    "node-malware-loader": {
+      "id": "node-malware-loader",
+      "data": {
+        "id": "node-malware-loader",
+        "label": "CobaltLoader",
+        "type": "malware",
+        "severity": "high",
+        "confidence": 89,
+        "subtitle": "Stage-1 DLL Stager",
+        "details": {
+          "purpose": "Process Hollowing into svchost.exe",
+          "evidenceCount": 8
+        }
+      },
+      "position": {
+        "x": 80,
+        "y": 180
+      }
+    },
+    "node-ip-primary": {
+      "id": "node-ip-primary",
+      "data": {
+        "id": "node-ip-primary",
+        "label": "185.220.101.5",
+        "type": "ip",
+        "severity": "critical",
+        "confidence": 95,
+        "subtitle": "Primary C2 & Exploit Staging Node",
+        "isTarget": true,
+        "details": {
+          "asn": "AS49870 (Solaris Networks BV)",
+          "country": "Netherlands",
+          "ports": "8443 (HTTPS), 443, 22",
+          "jarm": "27d36d2d000d000dc427d36d2d000d",
+          "evidenceCount": 15
+        }
+      },
+      "position": {
+        "x": 420,
+        "y": 440
+      }
+    },
+    "node-ip-secondary": {
+      "id": "node-ip-secondary",
+      "data": {
+        "id": "node-ip-secondary",
+        "label": "185.220.101.19",
+        "type": "ip",
+        "severity": "high",
+        "confidence": 91,
+        "subtitle": "Fallback Staging Node",
+        "details": {
+          "asn": "AS49870 (Solaris Networks BV)",
+          "relationship": "Identical TLS Certificate Serial",
+          "evidenceCount": 7
+        }
+      },
+      "position": {
+        "x": 680,
+        "y": 460
+      }
+    },
+    "node-domain-primary": {
+      "id": "node-domain-primary",
+      "data": {
+        "id": "node-domain-primary",
+        "label": "quantum-defense.org",
+        "type": "domain",
+        "severity": "high",
+        "confidence": 98,
+        "subtitle": "Spoofed Defense Procurement Portal",
+        "isTarget": true,
+        "details": {
+          "registrar": "Njalla Privacy Shield",
+          "created": "2026-08-29",
+          "dnsRecords": "A -> 185.220.101.5",
+          "evidenceCount": 9
+        }
+      },
+      "position": {
+        "x": 180,
+        "y": 560
+      }
+    },
+    "node-cve-8912": {
+      "id": "node-cve-8912",
+      "data": {
+        "id": "node-cve-8912",
+        "label": "CVE-2026-8912",
+        "type": "cve",
+        "severity": "critical",
+        "confidence": 94,
+        "subtitle": "Edge Gateway Unauthenticated RCE",
+        "isTarget": true,
+        "details": {
+          "cvss": 9.8,
+          "cisaKev": true,
+          "epssScore": "94.1%",
+          "affected": "EdgeSecure Gateway OS v11.2 - v12.4",
+          "evidenceCount": 11
+        }
+      },
+      "position": {
+        "x": 740,
+        "y": 300
+      }
+    },
+    "node-hash-payload": {
+      "id": "node-hash-payload",
+      "data": {
+        "id": "node-hash-payload",
+        "label": "7f9a2e88c014... (SHA256)",
+        "type": "hash",
+        "severity": "critical",
+        "confidence": 98,
+        "subtitle": "BlackVenom Dropper Binary",
+        "details": {
+          "fileType": "PE32+ executable (DLL) x86-64",
+          "imphash": "a21f89bc1029",
+          "evidenceCount": 8
+        }
+      },
+      "position": {
+        "x": 400,
+        "y": 640
+      }
+    },
+    "node-tech-t1190": {
+      "id": "node-tech-t1190",
+      "data": {
+        "id": "node-tech-t1190",
+        "label": "T1190: Exploit Public App",
+        "type": "technique",
+        "severity": "high",
+        "confidence": 95,
+        "subtitle": "MITRE ATT&CK Initial Access",
+        "details": {
+          "tactic": "Initial Access",
+          "observedTool": "CVE-2026-8912 Exploit Wrapper",
+          "evidenceCount": 18
+        }
+      },
+      "position": {
+        "x": 960,
+        "y": 320
+      }
+    },
+    "node-tech-t1071": {
+      "id": "node-tech-t1071",
+      "data": {
+        "id": "node-tech-t1071",
+        "label": "T1071.001: Web Protocols (HTTPS)",
+        "type": "technique",
+        "severity": "medium",
+        "confidence": 92,
+        "subtitle": "MITRE ATT&CK Command & Control",
+        "details": {
+          "tactic": "Command and Control",
+          "observedPort": "TLS 8443 with JARM match",
+          "evidenceCount": 22
+        }
+      },
+      "position": {
+        "x": 700,
+        "y": 620
+      }
+    }
+  },
+  "graphEdges": {
+    "e-1": {
+      "id": "e-1",
+      "source": "node-apt84",
+      "target": "node-malware-bv",
+      "label": "uses",
+      "confidence": 94,
+      "sourceCount": 14,
+      "verified": true
+    },
+    "e-2": {
+      "id": "e-2",
+      "source": "node-apt84",
+      "target": "node-malware-loader",
+      "label": "uses",
+      "confidence": 89,
+      "sourceCount": 6,
+      "verified": true
+    },
+    "e-3": {
+      "id": "e-3",
+      "source": "node-apt84",
+      "target": "node-camp-arctic",
+      "label": "associated_with",
+      "confidence": 91,
+      "sourceCount": 12,
+      "verified": true
+    },
+    "e-4": {
+      "id": "e-4",
+      "source": "node-camp-arctic",
+      "target": "node-target-aero",
+      "label": "targets",
+      "confidence": 95,
+      "sourceCount": 8,
+      "verified": true
+    },
+    "e-5": {
+      "id": "e-5",
+      "source": "node-apt84",
+      "target": "node-ip-primary",
+      "label": "controls",
+      "confidence": 92,
+      "sourceCount": 9,
+      "verified": true
+    },
+    "e-6": {
+      "id": "e-6",
+      "source": "node-ip-primary",
+      "target": "node-domain-primary",
+      "label": "resolves_to",
+      "confidence": 98,
+      "sourceCount": 7,
+      "verified": true
+    },
+    "e-7": {
+      "id": "e-7",
+      "source": "node-malware-bv",
+      "target": "node-ip-primary",
+      "label": "communicates_with",
+      "confidence": 96,
+      "sourceCount": 11,
+      "verified": true
+    },
+    "e-8": {
+      "id": "e-8",
+      "source": "node-malware-bv",
+      "target": "node-ip-secondary",
+      "label": "communicates_with",
+      "confidence": 88,
+      "sourceCount": 5,
+      "verified": true
+    },
+    "e-9": {
+      "id": "e-9",
+      "source": "node-camp-arctic",
+      "target": "node-cve-8912",
+      "label": "exploits",
+      "confidence": 94,
+      "sourceCount": 10,
+      "verified": true
+    },
+    "e-10": {
+      "id": "e-10",
+      "source": "node-cve-8912",
+      "target": "node-tech-t1190",
+      "label": "related_to",
+      "confidence": 95,
+      "sourceCount": 15,
+      "verified": true
+    },
+    "e-11": {
+      "id": "e-11",
+      "source": "node-ip-primary",
+      "target": "node-hash-payload",
+      "label": "hosts",
+      "confidence": 97,
+      "sourceCount": 8,
+      "verified": true
+    },
+    "e-12": {
+      "id": "e-12",
+      "source": "node-malware-bv",
+      "target": "node-tech-t1071",
+      "label": "uses",
+      "confidence": 92,
+      "sourceCount": 16,
+      "verified": true
+    },
+    "e-13": {
+      "id": "e-13",
+      "source": "node-ip-primary",
+      "target": "node-ip-secondary",
+      "label": "associated_with",
+      "confidence": 90,
+      "sourceCount": 4,
+      "verified": true
+    }
+  },
+  "reports": {
+    "REP-2026-0842-ACTIP": {
+      "id": "REP-2026-0842-ACTIP",
+      "title": "Targeted Defense Intrusion Campaign Involving BlackVenom RAT and Edge Gateway RCE (CVE-2026-8912)",
+      "tlp": "AMBER",
+      "date": "2026-09-16 11:55:00 UTC",
+      "author": "ACTIP Automated Agentic CTI Engine & Tier-3 SOC Intel Desk",
+      "classification": "RESTRICTED / TLP:AMBER / LAW ENFORCEMENT & PARTICIPATING SOCs",
+      "investigationRef": "INV-2026-0842",
+      "confidenceScore": 89,
+      "executiveSummary": "During the first half of September 2026, threat hunting sensors and perimeter telemetry identified a coordinated espionage campaign targeting Western aerospace and defense industrial contractors. The adversary exploited an unauthenticated remote code execution vulnerability in enterprise perimeter edge gateways (CVE-2026-8912) to deploy a newly observed variant of BlackVenom RAT (v3.2). Operational infrastructure pivots directly to IP 185.220.101.5 and domain quantum-defense.org. Attribution analysis associates this activity with 91% confidence to state-sponsored threat group APT-84 (RedBanshee / Cobalt Frost). Immediate egress blocking and firmware mitigation are required.",
+      "investigationScope": [
+        "Boundary ingress logs across DMZ edge gateway clusters (2026-08-01 to 2026-09-15)",
+        "Passive DNS and TLS certificate telemetry for IP block 185.220.101.0/24",
+        "Sandbox dynamic execution analysis of weaponized payload SHA256 7f9a2e88c014...",
+        "Corroboration against MISP, AlienVault OTX, CERT-EU, and CISA KEV catalogs"
+      ],
+      "keyFindings": [
+        "Active Command-and-Control node 185.220.101.5 listening on TLS/8443 with proprietary JARM signature 27d36d2d000d000dc427d36d2d000d.",
+        "Spoofed defense procurement portal quantum-defense.org used for secondary staging and decoy lure delivery.",
+        "Weaponization of CVE-2026-8912 observed across 4 independent defense contractor networks prior to general vendor patching.",
+        "1 contradictory attribution hypothesis from CrowdSensor #CS-994 (commercial proxy leasing) investigated and resolved: APT-84 utilized Solaris Networks VPS subnets as operational forward relays.",
+        "Internal perimeter firewalls successfully blocked 14 inbound exploitation attempts matching signature ACTIP-SIG-8912."
+      ],
+      "threatActorAnalysis": {
+        "name": "APT-84 (RedBanshee / Cobalt Frost)",
+        "aliases": [
+          "Cobalt Frost",
+          "TEMP.Tundra",
+          "UAC-0098"
+        ],
+        "attributionConfidence": 91,
+        "summary": "APT-84 is an advanced cyber espionage actor focused on critical infrastructure, aerospace blueprints, and satellite telecommunications intelligence. The group exhibits disciplined operational security, utilizing multi-tier proxy relays and ephemeral domain registration cadence.",
+        "geopoliticalContext": "Timing aligns with international defense procurement summits and multilateral aerospace joint venture negotiations occurring throughout Q3 2026."
+      },
+      "infrastructureAnalysis": {
+        "primaryNodes": [
+          "185.220.101.5 (Port 8443 HTTPS, Port 22 SSH)"
+        ],
+        "stagingNodes": [
+          "185.220.101.19 (Shared TLS Certificate Serial 4A91B8820)"
+        ],
+        "domains": [
+          "quantum-defense.org",
+          "portal-sync.quantum-defense.org",
+          "stage2.cdn-securegate.net"
+        ],
+        "jarmFingerprints": [
+          "27d36d2d000d000dc427d36d2d000d"
+        ],
+        "autonomousSystems": [
+          "AS49870 (Solaris Networks BV, Netherlands)"
+        ]
+      },
+      "malwareAnalysis": {
+        "name": "BlackVenom RAT",
+        "version": "3.2 (Build 2026.08)",
+        "capabilities": [
+          "In-memory NTDLL unhooking (EDR bypass)",
+          "TLS 1.3 heartbeat beaconing with randomized jitter (30s - 180s)",
+          "Direct system call invocation for LSASS memory reading",
+          "Dual C2 fallback routing table"
+        ],
+        "yaraRule": "RULE_APT84_BLACKVENOM_LOADER_V3"
+      },
+      "vulnerabilityAnalysis": {
+        "cve": "CVE-2026-8912",
+        "cvss": 9.8,
+        "kevStatus": "Added to CISA KEV on 2026-09-05 (Emergency Directive 26-02)",
+        "impact": "Unauthenticated Remote Code Execution on perimeter gateway firmware"
+      },
+      "attackMapping": [
+        {
+          "tactic": "Initial Access",
+          "techniqueId": "T1190",
+          "techniqueName": "Exploit Public-Facing Application",
+          "evidence": "Exploit payload POST /api/v2/vpn/tunnel"
+        },
+        {
+          "tactic": "Initial Access",
+          "techniqueId": "T1566.002",
+          "techniqueName": "Spearphishing Link",
+          "evidence": "Lure email pointing to quantum-defense.org/rfp-2026"
+        },
+        {
+          "tactic": "Execution",
+          "techniqueId": "T1059.001",
+          "techniqueName": "PowerShell Execution",
+          "evidence": "Base64 encoded downloader script invoked via WMI"
+        },
+        {
+          "tactic": "Defense Evasion",
+          "techniqueId": "T1055.012",
+          "techniqueName": "Process Hollowing",
+          "evidence": "Injected into svchost.exe (PID 4820)"
+        },
+        {
+          "tactic": "Command and Control",
+          "techniqueId": "T1071.001",
+          "techniqueName": "Web Protocols (HTTPS)",
+          "evidence": "Port 8443 encrypted C2 traffic"
+        }
+      ],
+      "timeline": [
+        {
+          "date": "2026-07-15",
+          "event": "Domain quantum-defense.org registered under Njalla privacy shield",
+          "category": "Infrastructure Acquisition"
+        },
+        {
+          "date": "2026-08-12",
+          "event": "VPS 185.220.101.5 provisioned at Solaris Networks BV",
+          "category": "Infrastructure Acquisition"
+        },
+        {
+          "date": "2026-08-25",
+          "event": "CVE-2026-8912 vulnerability published in vendor pre-advisory",
+          "category": "Vulnerability Disclosure"
+        },
+        {
+          "date": "2026-09-01",
+          "event": "Weaponized exploit tested against external gateway testbed",
+          "category": "Weaponization"
+        },
+        {
+          "date": "2026-09-05",
+          "event": "CISA issues Emergency Directive adding CVE-2026-8912 to KEV",
+          "category": "Regulatory Advisory"
+        },
+        {
+          "date": "2026-09-12",
+          "event": "Sandbox detonation confirms BlackVenom RAT v3.2 payload beaconing",
+          "category": "Malware Observation"
+        },
+        {
+          "date": "2026-09-15",
+          "event": "Internal perimeter firewalls block 14 exploitation POST requests",
+          "category": "Detection & Containment"
+        }
+      ],
+      "evidenceSummary": {
+        "totalSources": 9,
+        "meanReliability": 93.4,
+        "conflictingEvidenceResolved": true,
+        "conflictNote": "Resolved attribution conflict from CrowdSensor CS-994 (SilverFox leasing vs APT-84); verified infrastructure co-residency."
+      },
+      "recommendedActions": [
+        "Block IP subnet 185.220.101.0/24 at external edge firewalls and BGP peer boundary routers.",
+        "Add domain quantum-defense.org and subdomains to corporate DNS sinkhole / RPZ feeds.",
+        "Immediately patch EdgeSecure Gateway OS to firmware release v12.4.2.",
+        "Execute memory sweep for JARM hash 27d36d2d000d000dc427d36d2d000d across all perimeter proxies.",
+        "Share STIX 2.1 threat bundle with sectoral ISAC and national CERT coordinators."
+      ],
+      "stixBundle": {
+        "type": "bundle",
+        "id": "bundle--79a1f28b-4a30-4e2a-8991-d820491029ba",
+        "spec_version": "2.1",
+        "objects": [
+          {
+            "type": "threat-actor",
+            "spec_version": "2.1",
+            "id": "threat-actor--e42b1029-4100-4b21-8729-192038475610",
+            "created": "2026-09-16T11:42:10.000Z",
+            "modified": "2026-09-16T11:42:10.000Z",
+            "name": "APT-84 (RedBanshee)",
+            "threat_actor_types": [
+              "nation-state",
+              "spy"
+            ],
+            "aliases": [
+              "Cobalt Frost",
+              "TEMP.Tundra"
+            ]
+          },
+          {
+            "type": "malware",
+            "spec_version": "2.1",
+            "id": "malware--49102938-5100-4c12-9812-283746192039",
+            "created": "2026-09-16T11:42:10.000Z",
+            "modified": "2026-09-16T11:42:10.000Z",
+            "name": "BlackVenom RAT",
+            "is_family": true,
+            "malware_types": [
+              "remote-access-trojan"
+            ]
+          },
+          {
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--91028374-6200-4d34-a923-394857201948",
+            "created": "2026-09-16T11:42:10.000Z",
+            "modified": "2026-09-16T11:42:10.000Z",
+            "name": "Malicious C2 IPv4 Address",
+            "pattern": "[ipv4-addr:value = '185.220.101.5']",
+            "pattern_type": "stix",
+            "valid_from": "2026-08-12T00:00:00Z"
+          }
+        ]
+      }
+    },
+    "REP-2026-6751-ACTIP": {
+      "id": "REP-2026-6751-ACTIP",
+      "title": "Intelligence Assessment: 185.220.101.5 Intrusion Activity",
+      "tlp": "AMBER",
+      "date": "2026-09-24 16:23:04 UTC",
+      "author": "ACTIP Automated Agentic CTI Engine & Tier-3 SOC Intel Desk",
+      "classification": "RESTRICTED / TLP:AMBER / LAW ENFORCEMENT & PARTICIPATING SOCs",
+      "investigationRef": "INV-2026-0842",
+      "confidenceScore": 89,
+      "executiveSummary": "High-confidence malicious infrastructure identified. The primary indicator 185.220.101.5 operates as a dual-role Command-and-Control (C2) and staging node for BlackVenom RAT. Passive DNS correlations reveal active resolution to quantum-defense.org (spoofed defense contractor domain) hosting weaponized payload CVE-2026-8912 exploits. Attribution correlates with 91% confidence to threat group APT-84 (RedBanshee / Cobalt Frost) under Operation Arctic Ghost targeting aerospace and energy sectors.",
+      "investigationScope": [
+        "Analysis of observables: 185.220.101.5, quantum-defense.org, CVE-2026-8912",
+        "Passive DNS and TLS certificate telemetry",
+        "Cross-correlation against CISA KEV and ThreatFox repositories"
+      ],
+      "keyFindings": [
+        "IP 185.220.101.5 identified as active C2 server communicating with BlackVenom RAT v3.2 beacons via HTTPS over port 8443.",
+        "Domain quantum-defense.org registered via Njalla privacy shield; passive DNS historical overlap shows co-location with known APT-84 staging clusters.",
+        "Zero-day vulnerability CVE-2026-8912 (Edge Gateway RCE) actively weaponized for initial boundary penetration.",
+        "6 independent intelligence feeds verify attribution; 1 source flags possible infrastructure leasing to sub-contractor proxy farm (reviewed & resolved).",
+        "3 MITRE ATT&CK techniques confirmed in internal telemetry logs matching active beacon patterns."
+      ],
+      "threatActorAnalysis": {
+        "name": "APT-84 (RedBanshee / Cobalt Frost)",
+        "aliases": [
+          "Cobalt Frost",
+          "TEMP.Tundra",
+          "UAC-0098"
+        ],
+        "attributionConfidence": 91,
+        "summary": "APT-84 is an advanced cyber espionage actor focused on critical infrastructure and defense blueprints.",
+        "geopoliticalContext": "Aligned with defense procurement cycles and aerospace joint ventures."
+      },
+      "infrastructureAnalysis": {
+        "primaryNodes": [
+          "185.220.101.5 (Port 8443 HTTPS, Port 22 SSH)"
+        ],
+        "stagingNodes": [
+          "185.220.101.19"
+        ],
+        "domains": [
+          "quantum-defense.org"
+        ],
+        "jarmFingerprints": [
+          "27d36d2d000d000dc427d36d2d000d"
+        ],
+        "autonomousSystems": [
+          "AS49870 (Solaris Networks BV)"
+        ]
+      },
+      "malwareAnalysis": {
+        "name": "BlackVenom RAT",
+        "version": "3.2",
+        "capabilities": [
+          "In-memory NTDLL unhooking (EDR bypass)",
+          "TLS 1.3 heartbeat beaconing",
+          "Direct system call invocation"
+        ],
+        "yaraRule": "RULE_APT84_BLACKVENOM_LOADER_V3"
+      },
+      "vulnerabilityAnalysis": {
+        "cve": "CVE-2026-8912",
+        "cvss": 9.8,
+        "kevStatus": "Added to CISA KEV (Emergency Directive)",
+        "impact": "Unauthenticated Remote Code Execution"
+      },
+      "attackMapping": [
+        {
+          "tactic": "Initial Access",
+          "techniqueId": "T1190",
+          "techniqueName": "Exploit Public-Facing Application",
+          "evidence": "Exploit POST /api/v2/vpn/tunnel"
+        },
+        {
+          "tactic": "Command and Control",
+          "techniqueId": "T1071.001",
+          "techniqueName": "Web Protocols",
+          "evidence": "Port 8443 encrypted beaconing"
+        }
+      ],
+      "timeline": [
+        {
+          "date": "2026-09-01",
+          "event": "Infrastructure discovered",
+          "category": "Infrastructure"
+        },
+        {
+          "date": "2026-09-05",
+          "event": "CISA KEV addition",
+          "category": "Advisory"
+        },
+        {
+          "date": "2026-09-15",
+          "event": "Telemetry beacon detected",
+          "category": "Detection"
+        }
+      ],
+      "evidenceSummary": {
+        "totalSources": 9,
+        "meanReliability": 93.4,
+        "conflictingEvidenceResolved": true,
+        "conflictNote": "Resolved attribution conflict from CrowdSensor CS-994 (VPS hosting proxy)."
+      },
+      "recommendedActions": [
+        "Emergency perimeter firewall block on IPv4 range 185.220.101.0/24 (Solaris Networks BV).",
+        "Sinkhole DNS resolution for domain quantum-defense.org and all associated subdomains.",
+        "Immediately patch Edge Gateway firmware to mitigate CVE-2026-8912 per CISA Emergency Directive.",
+        "Deploy YARA rule APT84_BLACKVENOM_LOADER across all endpoints and sweep memory buffers for JARM 27d36d2d000d000dc427d36d2d000d.",
+        "Initiate retroactive hunting on SIEM for TLS handshakes to port 8443 dating back to 2026-08-01."
+      ],
+      "stixBundle": {
+        "type": "bundle",
+        "id": "bundle--gmwyywd92oj",
+        "spec_version": "2.1",
+        "objects": [
+          {
+            "type": "threat-actor",
+            "spec_version": "2.1",
+            "id": "threat-actor--apt84",
+            "name": "APT-84 (RedBanshee)"
+          },
+          {
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--target",
+            "pattern": "[ipv4-addr:value = '185.220.101.5']"
+          }
+        ]
+      }
+    }
+  },
+  "sourceConnectors": {
+    "src-1": {
+      "id": "src-1",
+      "name": "MITRE ATT&CK Enterprise v15.1",
+      "type": "STIX 2.1 TAXII",
+      "status": "connected",
+      "lastSync": "12 min ago",
+      "syncIntervalMinutes": 60,
+      "recordsIngestedTotal": 42180,
+      "recordsIngested24h": 310,
+      "reliability": 99,
+      "format": "STIX 2.1 / JSON",
+      "enabled": true,
+      "recentErrors": []
+    },
+    "src-2": {
+      "id": "src-2",
+      "name": "MISP Threat Exchange Community",
+      "type": "MISP Instance",
+      "status": "connected",
+      "lastSync": "4 min ago",
+      "syncIntervalMinutes": 5,
+      "recordsIngestedTotal": 384100,
+      "recordsIngested24h": 18240,
+      "reliability": 94,
+      "format": "MISP Event JSON",
+      "enabled": true,
+      "recentErrors": []
+    },
+    "src-3": {
+      "id": "src-3",
+      "name": "AlienVault OTX (Direct API)",
+      "type": "Commercial API",
+      "status": "connected",
+      "lastSync": "7 min ago",
+      "syncIntervalMinutes": 10,
+      "recordsIngestedTotal": 210400,
+      "recordsIngested24h": 9420,
+      "reliability": 88,
+      "format": "OTX Pulses API v1",
+      "enabled": true,
+      "recentErrors": []
+    },
+    "src-4": {
+      "id": "src-4",
+      "name": "CISA Known Exploited Vulnerabilities (KEV)",
+      "type": "Structured Feed",
+      "status": "connected",
+      "lastSync": "18 min ago",
+      "syncIntervalMinutes": 30,
+      "recordsIngestedTotal": 1240,
+      "recordsIngested24h": 3,
+      "reliability": 100,
+      "format": "NVD JSON v2.0",
+      "enabled": true,
+      "recentErrors": []
+    },
+    "src-5": {
+      "id": "src-5",
+      "name": "VirusTotal Enterprise Threat Intelligence",
+      "type": "Commercial API",
+      "status": "warning",
+      "lastSync": "42 min ago",
+      "syncIntervalMinutes": 15,
+      "recordsIngestedTotal": 84120,
+      "recordsIngested24h": 3120,
+      "reliability": 95,
+      "format": "VT Graph / API v3",
+      "enabled": true,
+      "recentErrors": [
+        {
+          "timestamp": "11:20:14 UTC",
+          "message": "Rate limit threshold reached on secondary quota tier (HTTP 429)",
+          "code": "ERR_VT_RATE_LIMIT"
+        }
+      ]
+    },
+    "src-6": {
+      "id": "src-6",
+      "name": "Internal DMZ Firewall & EDR Telemetry Stream",
+      "type": "Internal EDR Telemetry",
+      "status": "connected",
+      "lastSync": "22s ago",
+      "syncIntervalMinutes": 1,
+      "recordsIngestedTotal": 2490100,
+      "recordsIngested24h": 110400,
+      "reliability": 99,
+      "format": "Kafka Stream / Syslog CEF",
+      "enabled": true,
+      "recentErrors": []
+    }
+  },
+  "pipelineStages": {
+    "stage-source": {
+      "id": "stage-source",
+      "name": "1. Ingestion / Connectors",
+      "order": 1,
+      "recordsProcessed": 148290,
+      "successful": 147810,
+      "failed": 480,
+      "latencyMs": 142,
+      "lastRun": "12s ago",
+      "errorRate": 0.32,
+      "status": "healthy",
+      "description": "Pulls raw threat pulses, TAXII 2.1 bundles, and telemetry JSON payloads from 6 active connectors."
+    },
+    "stage-parser": {
+      "id": "stage-parser",
+      "name": "2. Syntactic Parser",
+      "order": 2,
+      "recordsProcessed": 147810,
+      "successful": 147650,
+      "failed": 160,
+      "latencyMs": 85,
+      "lastRun": "12s ago",
+      "errorRate": 0.11,
+      "status": "healthy",
+      "description": "Deserializes heterogeneous schemas into intermediate AST representations; filters malformed payloads."
+    },
+    "stage-normalizer": {
+      "id": "stage-normalizer",
+      "name": "3. STIX 2.1 Normalizer",
+      "order": 3,
+      "recordsProcessed": 147650,
+      "successful": 147520,
+      "failed": 130,
+      "latencyMs": 110,
+      "lastRun": "10s ago",
+      "errorRate": 0.09,
+      "status": "healthy",
+      "description": "Converts observable indicators, identities, attack patterns, and relationships into canonical STIX 2.1 entities."
+    },
+    "stage-resolution": {
+      "id": "stage-resolution",
+      "name": "4. Entity Resolution & Deduplication",
+      "order": 4,
+      "recordsProcessed": 147520,
+      "successful": 146900,
+      "failed": 620,
+      "latencyMs": 245,
+      "lastRun": "8s ago",
+      "errorRate": 0.42,
+      "status": "healthy",
+      "description": "Fuzzy matching on aliases, WHOIS registrant clusters, JARM hash clusters, and co-located BGP autonomous systems."
+    },
+    "stage-graph": {
+      "id": "stage-graph",
+      "name": "5. Knowledge Graph Ingestion",
+      "order": 5,
+      "recordsProcessed": 146900,
+      "successful": 146810,
+      "failed": 90,
+      "latencyMs": 310,
+      "lastRun": "5s ago",
+      "errorRate": 0.06,
+      "status": "healthy",
+      "description": "Persists verified nodes and directed provenance edges into graph datastore; updates transitive centrality scores."
+    },
+    "stage-vector": {
+      "id": "stage-vector",
+      "name": "6. Semantic Vector Index",
+      "order": 6,
+      "recordsProcessed": 146810,
+      "successful": 146810,
+      "failed": 0,
+      "latencyMs": 190,
+      "lastRun": "3s ago",
+      "errorRate": 0,
+      "status": "healthy",
+      "description": "Embeds threat descriptions, attribution hypotheses, and unstructured CERT reports for semantic hybrid retrieval."
+    }
+  }
+}
