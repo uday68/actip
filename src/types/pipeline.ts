@@ -10,6 +10,7 @@ export interface PipelineStageMetric {
   errorRate: number; // percentage
   status: 'healthy' | 'degraded' | 'syncing' | 'idle';
   description: string;
+  throughputPerSec?: number;
 }
 
 export interface SourceConnector {

@@ -312,6 +312,14 @@ class CtiDatabase {
     }
     return null;
   }
+
+  public updatePipelineStages(stages: PipelineStageMetric[]) {
+    stages.forEach(s => {
+      this.db.pipelineStages[s.id] = s;
+    });
+    this.persist();
+    return this.getPipelineStages();
+  }
 }
 
 // Global singleton for Next.js server runtime

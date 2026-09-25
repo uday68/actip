@@ -21,24 +21,28 @@ export class CisaKevService {
   private isFetching: boolean = false;
 
   constructor() {
-    this.cachePath = path.join(process.cwd(), 'data', 'cisa-kev-cache.json');
+    this.cachePath = path.join(process.cwd(), 'data', 'cisa-kev-catalog.json');
     this.loadFromCache();
   }
 
   private loadFromCache() {
     try {
-      if (fs.existsSync(this.cachePath)) {
-        const raw = fs.readFileSync(this.cachePath, 'utf-8');
+      const catalogPath = path.join(process.cwd(), 'data', 'cisa-kev-catalog.json');
+      const cachePath = path.join(process.cwd(), 'data', 'cisa-kev-cache.json');
+      const filePath = fs.existsSync(catalogPath) ? catalogPath : (fs.existsSync(cachePath) ? cachePath : null);
+
+      if (filePath) {
+        const raw = fs.readFileSync(filePath, 'utf-8');
         const data = JSON.parse(raw);
         if (Array.isArray(data.vulnerabilities)) {
           data.vulnerabilities.forEach((v: CisaKevEntry) => {
             this.catalog.set(v.cveID.toUpperCase(), v);
           });
-          this.lastFetched = data.lastFetched || Date.now();
+          this.lastFetched = Date.now();
         }
       }
     } catch (err) {
-      console.warn('[CisaKevService] Could not read cache, will fetch fresh catalog.');
+      console.warn('[CisaKevService] Could not read local catalog, falling back to seed/live.');
     }
 
     // Seed known critical CVEs if catalog is currently empty

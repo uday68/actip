@@ -1,3 +1,6 @@
+import fs from 'fs';
+import path from 'path';
+
 export interface ThreatFoxIoc {
   id: string;
   ioc: string;
@@ -17,6 +20,41 @@ export interface ThreatFoxIoc {
 export class ThreatFoxService {
   public async searchIoc(indicator: string): Promise<ThreatFoxIoc[]> {
     const clean = indicator.trim().replace(/^https?:\/\//i, '').split('/')[0];
+
+    // Check downloaded local ThreatFox dataset first
+    try {
+      const localFile = path.join(process.cwd(), 'data', 'threatfox-recent.json');
+      if (fs.existsSync(localFile)) {
+        const raw = fs.readFileSync(localFile, 'utf-8');
+        const data = JSON.parse(raw);
+        for (const key of Object.keys(data)) {
+          const list = data[key];
+          if (Array.isArray(list)) {
+            const match = list.find((item: any) =>
+              item.ioc_value && item.ioc_value.toLowerCase().includes(clean.toLowerCase())
+            );
+            if (match) {
+              return [{
+                id: String(match.id || match.ioc_value),
+                ioc: match.ioc_value,
+                threatType: match.threat_type || 'botnet_cc',
+                threatTypeDesc: match.threat_type_desc || 'Command and Control server',
+                iocType: match.ioc_type || 'ip:port',
+                malware: match.malware || 'Unknown Malware',
+                malwarePrintable: match.malware_printable || match.malware,
+                confidenceLevel: match.confidence_level || 85,
+                firstSeen: match.first_seen_utc || new Date().toISOString(),
+                lastSeen: match.last_seen_utc,
+                reporter: match.reporter || 'threatfox_community',
+                tags: typeof match.tags === 'string' ? match.tags.split(',') : (match.tags || [])
+              }];
+            }
+          }
+        }
+      }
+    } catch (e) {
+      // ignore
+    }
 
     try {
       const controller = new AbortController();
