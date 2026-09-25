@@ -24,7 +24,8 @@ The application will be live at `http://localhost:3000`.
 
 ## 📚 Core Documentation
 
-* **[AI Architecture, Datasets & Models Guide (Read This!)](./AI_AND_DATASETS_EXPLAINED.md)**: Deep dive into all 6 real-world datasets, the tri-layer AI model stack, why AI is needed over scripts, and the 2-minute interview script.
+* **[Comprehensive Architecture, AI/NLP Engineering & FAQs](./PROJECT_DEEP_DIVE_AND_FAQS.md)**: In-depth technical compendium detailing the AI/NLP pipeline (SecBERT, Vector RAG, ReAct), multi-model database rationale, zero-day/unknown IP triage, end-to-end workflows, and DFD Level 0/1 diagrams.
+* **[AI Architecture, Datasets & Models Guide](./AI_AND_DATASETS_EXPLAINED.md)**: Deep dive into all 6 real-world datasets, the tri-layer AI model stack, why AI is needed over scripts, and the 2-minute interview defense script.
 
 ---
 
