@@ -12,6 +12,8 @@ An exhaustive, evidence-grounded technical reference documenting the artificial 
    - [Q4: Is our project just a database lookup tool?](#q4-is-our-project-just-a-database-lookup-tool)
    - [Q5: What datasets are used and are they real or synthetic?](#q5-what-datasets-are-used-and-are-they-real-or-synthetic)
    - [Q6: What does each individual tab do in ACTIP?](#q6-what-does-each-individual-tab-do-in-actip)
+   - [Q7: Do we also check for email? How can email threats be detected?](#q7-do-we-also-check-for-email-how-can-email-threats-be-detected)
+   - [Q8: Will this project sit between the network (inline) or just after an attack tracing tool?](#q8-will-this-project-sit-between-the-network-inline-or-just-after-an-attack-tracing-tool)
 2. [Deep Dive: AI & Natural Language Processing (NLP)](#2-deep-dive-ai--natural-language-processing-nlp)
    - [Layer 1: Cybersecurity Named Entity Recognition (SecBERT & Regex)](#layer-1-cybersecurity-named-entity-recognition-ner)
    - [Layer 2: Dense Vector Embeddings & Semantic Retrieval (RAG)](#layer-2-dense-vector-embeddings--semantic-retrieval-rag)
@@ -103,6 +105,86 @@ All datasets are **100% authoritative and downloaded from official cybersecurity
 * **Pipeline Telemetry (`/pipeline`)**: Data engineering telemetry monitoring real-time feed ingestion, parsing, entity disambiguation, vector indexing, and throughput.
 * **Sources & Connectors (`/sources`)**: Health, latency, sync intervals, and reliability scores for external intelligence connectors (CISA, ThreatFox, MISP, TAXII).
 * **Threat Reports (`/reports`)**: Executive intelligence briefings and exportable STIX 2.1 JSON packages.
+
+---
+
+### Q7: Do we also check for email? How can email threats be detected?
+**Yes.** ACTIP accepts raw email RFC 822 messages (`.eml`), email header dumps, and phishing incident telemetry. Email threats are evaluated across **5 distinct forensic layers**:
+
+1. **Cryptographic Header & Protocol Authentication**:
+   * **SPF (Sender Policy Framework)**: Validates if the sending mail transfer agent (MTA) IP address is authorized in the sender's DNS TXT record.
+   * **DKIM (DomainKeys Identified Mail)**: Verifies the cryptographic public-key signature of the email headers and body to detect in-transit tampering.
+   * **DMARC Alignment**: Enforces alignment between the visible `From:` header and the underlying SPF/DKIM envelope `Return-Path:`. Identifies forged executive sender addresses.
+2. **Domain Reputation & Typosquatting / Homograph Inspection**:
+   * Evaluates sender domains for **IDN Homograph attacks** (e.g., using Cyrillic characters like `а` instead of Latin `a`) and **Typosquatting** (`micros0ft.com`, `defense-procurements.org`).
+   * Queries RDAP for **Domain Age**: domains registered within the last 7 to 30 days receive an immediate high-risk penalty.
+3. **Malicious Attachment Forensics**:
+   * Extracts attachment file hashes (MD5, SHA-256) and parses file containers (`.zip`, `.iso`, `.vhd`, `.lnk`, `.svg`).
+   * Matches hashes against ThreatFox and scans payload scripts against YARA rules (*e.g., weaponized Office macros, embedded PowerShell loaders*).
+4. **Embedded URL & QR-Code (Quishing) De-obfuscation**:
+   * Extracts all hyperlinks and unwraps dynamic multi-hop URL redirects.
+   * Profiles the destination server using live DNS, SSL certificate serials, and JARM fingerprints to detect credential-harvesting kits.
+5. **NLP Semantic Intent & Social Engineering Detection**:
+   * SecBERT and the LLM agent analyze the email body for psychological coercion patterns:
+     * False urgency (*"Account suspended within 24 hours"*).
+     * Business Email Compromise (BEC) (*"Urgent wire transfer needed by CEO"*).
+     * Credential harvesting lures (*"Verify your SSO password"*).
+   * Maps the observed spearphishing technique to **MITRE ATT&CK `T1566: Phishing`** (Sub-techniques: `T1566.001 Spearphishing Attachment` and `T1566.002 Spearphishing Link`).
+
+---
+
+### Q8: Will this project sit between the network (inline) or just after an attack tracing tool?
+**ACTIP is an Out-of-Band Cognitive Cyber Threat Intelligence & Autonomous Investigation Platform (TIP + Investigation Workbench).** It does **NOT** sit directly inline as a physical packet router on the wire.
+
+#### Why CTI AI Platforms Do NOT Sit Inline on the Physical Network:
+1. **The Latency Incompatibility**:
+   * Inline network devices (such as Palo Alto Next-Gen Firewalls, Cisco hardware switches, and Suricata/Snort IPS) sit directly in the data plane. They forward gigabits of raw Ethernet frames and must make drop/pass decisions in **less than 1 millisecond (< 1 ms)**.
+   * An AI CTI investigation platform performs complex multi-hop graph traversals, live DNS/RDAP queries, Diamond Model cognitive reasoning, and vector semantic similarity searches, taking **~1 to 2 seconds**. Placing an AI reasoning engine inline on a physical switch would instantly choke enterprise network throughput.
+2. **Context Requirement**:
+   * Inline network firewalls inspect packet headers and basic protocol signatures. They do not have access to multi-year threat actor dossiers, CISA KEV catalogs, or historical malware reverse-engineering findings.
+
+#### Where ACTIP Sits in the Enterprise Architecture:
+ACTIP sits at the **Cognitive Intelligence & Orchestration Layer (Layer 3 & 4)**, working seamlessly alongside the entire enterprise defense stack:
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        ENTERPRISE SOC ECOSYSTEM                        │
+├────────────────────────────────────────────────────────────────────────┤
+│  INLINE LAYER (In-Band / Sub-Millisecond Enforcement)                  │
+│  • Edge Next-Gen Firewalls (Palo Alto, Fortinet, pfSense)              │
+│  • Intrusion Prevention Systems (Snort, Suricata)                      │
+│  • Secure Email Gateways - SEG (Proofpoint, Mimecast)                  │
+│  • Web Application Firewalls (Cloudflare, AWS WAF)                     │
+│  • Endpoint Agents (CrowdStrike Falcon, Microsoft Defender EDR)        │
+├────────────────────────────────────────────────────────────────────────┤
+│                                  ▲ Alert Telemetry (Syslog / Webhooks) │
+│                                  │                                     │
+│  TELEMETRY & LOG AGGREGATION LAYER                                    │
+│  • SIEM (Splunk, Microsoft Sentinel, IBM QRadar, Elastic Security)    │
+│  • Network Telemetry Sensors (Zeek, Corelight)                         │
+├────────────────────────────────────────────────────────────────────────┤
+│                                  │ Alerts, Anomalies & Observables     │
+│                                  ▼                                     │
+│  COGNITIVE INVESTIGATION & CTI LAYER (ACTIP - "The Brain")             │
+│  ★ ACTIP Autonomous Investigation Engine                               │
+│    1. Ingests alerts from SIEM, EDR, Email Gateways, or Analyst UI     │
+│    2. Executes 9-stage cognitive investigation (DNS, RDAP, KEV, ATT&CK)│
+│    3. Performs Diamond Model Threat Actor Attribution & Provenance     │
+│    4. Reconciles conflicting intelligence with zero hallucinations     │
+│    5. Synthesizes Actionable Containment Playbooks & STIX 2.1 Bundles  │
+├────────────────────────────────────────────────────────────────────────┤
+│                                  │                                     │
+│                                  ▼ CLOSED-LOOP ACTIVE DEFENSE PUSH     │
+│  • Pushes IP/Domain Blocklists ───────► Inline Firewalls & WAF         │
+│  • Pushes Sender/Domain Bans ─────────► Secure Email Gateways (SEG)    │
+│  • Pushes YARA Rules & Hashes ────────► Endpoint EDR Agents            │
+│  • Pushes STIX 2.1 Bundles ───────────► TAXII 2.1 Feeds & Partner SOCs │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+#### Summary of Operational Roles:
+* **Pre-Attack / Proactive**: Threat Hunting — analysts query emerging adversary campaigns, explore the MITRE ATT&CK navigator, and preemptively block newly registered C2 domains and weaponized CISA KEV CVEs.
+* **During / Post-Attack**: Incident Response Acceleration — when an alert triggers from an inline tool or EDR, ACTIP autonomously investigates it in seconds, identifies the attacker, and dispatches automated containment rules back to the network perimeter.
 
 ---
 
