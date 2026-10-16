@@ -13,7 +13,7 @@ Built with **Next.js 14 App Router**, **TypeScript**, **Tailwind CSS**, and back
 4. [The 9-Stage Autonomous Investigation Pipeline](#-the-9-stage-autonomous-investigation-pipeline)
 5. [AI & Machine Learning Models Used](#-ai--machine-learning-models-used)
 6. [Datasets Used (100% Real, Zero Synthetic Data)](#-datasets-used-100-authoritative-zero-synthetic-data)
-7. [Comprehensive Tech Stack](#-comprehensive-tech-stack)
+7. [Multi-Language Enterprise Tech Stack (C++, Python, TypeScript)](#-multi-language-enterprise-tech-stack)
 8. [Screen & Tab Breakdown](#-screen--tab-breakdown)
 9. [Quick Start & Runtime Benchmarks](#-quick-start--runtime-benchmarks)
 10. [Core Documentation Links](#-core-documentation-links)
