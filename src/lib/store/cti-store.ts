@@ -1,17 +1,47 @@
-import { create } from 'zustand';
+'use client';
+
+import { useMemo, useCallback } from 'react';
+import { useAppDispatch, useAppSelector, store } from './redux/store';
+import {
+  setTheme,
+  toggleTheme,
+  dismissDemoNotice,
+  setSearchOpen,
+  setNotificationsOpen,
+  setAnalystProfile,
+  AnalystProfile
+} from './redux/slices/uiSlice';
+import {
+  setActiveInvestigation,
+  setInvestigating,
+  setCurrentStageIndex,
+  setInvestigationProgress,
+  pauseInvestigation,
+  resetInvestigation
+} from './redux/slices/investigationSlice';
+import {
+  setSelectedGraphNode,
+  toggleGraphFilterType,
+  setMinConfidenceFilter,
+  resetGraphFilters
+} from './redux/slices/graphSlice';
 import { InvestigationResult } from '@/types/investigation';
-import { primaryInvestigation } from '@/lib/mock-data/investigations';
 import { GraphNodeData } from '@/types/cti';
 import { ctiService } from '@/lib/api/cti-service';
+import { primaryInvestigation } from '@/lib/mock-data/investigations';
 
-interface CTIState {
+export interface CTIStoreState {
+  theme: 'light' | 'dark';
+  setTheme: (theme: 'light' | 'dark') => void;
+  toggleTheme: () => void;
+
   demoModeNotice: boolean;
   dismissDemoNotice: () => void;
 
   activeInvestigation: InvestigationResult;
   isInvestigating: boolean;
   currentStageIndex: number;
-  investigationProgress: number; // 0 to 100
+  investigationProgress: number;
   startNewInvestigation: (query: string) => Promise<void>;
   pauseInvestigation: () => void;
   resetInvestigation: () => void;
@@ -29,67 +59,37 @@ interface CTIState {
   isNotificationsOpen: boolean;
   setNotificationsOpen: (open: boolean) => void;
 
-  theme: 'light' | 'dark';
-  setTheme: (theme: 'light' | 'dark') => void;
-  toggleTheme: () => void;
-
-  analystProfile: {
-    name: string;
-    role: string;
-    clearance: string;
-    badgeId: string;
-  };
+  analystProfile: AnalystProfile;
 }
 
-export const useCTIStore = create<CTIState>((set, get) => ({
-  theme: 'light',
-  setTheme: (theme: 'light' | 'dark') => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('actip_theme', theme);
-    }
-    set({ theme });
-  },
-  toggleTheme: () => {
-    const next = get().theme === 'light' ? 'dark' : 'light';
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('actip_theme', next);
-    }
-    set({ theme: next });
-  },
+export function useCTIStore<T = CTIStoreState>(selector?: (state: CTIStoreState) => T): T {
+  const dispatch = useAppDispatch();
+  const ui = useAppSelector(state => state.ui);
+  const investigation = useAppSelector(state => state.investigation);
+  const graph = useAppSelector(state => state.graph);
 
-  demoModeNotice: true, // Live CTI notification banner
-  dismissDemoNotice: () => set({ demoModeNotice: false }),
-
-  activeInvestigation: primaryInvestigation,
-  isInvestigating: false,
-  currentStageIndex: 8,
-  investigationProgress: 100,
-
-  startNewInvestigation: async (query: string) => {
+  const startNewInvestigation = useCallback(async (query: string) => {
     const q = query.trim() || '185.220.101.5, quantum-defense.org, CVE-2026-8912';
 
-    // Set initial running state
     const initialStages = primaryInvestigation.stages.map((stage, idx) => ({
       ...stage,
       status: idx === 0 ? ('running' as const) : ('pending' as const)
     }));
 
-    set({
-      isInvestigating: true,
-      currentStageIndex: 0,
-      investigationProgress: 10,
-      activeInvestigation: {
+    dispatch(setInvestigating(true));
+    dispatch(setCurrentStageIndex(0));
+    dispatch(setInvestigationProgress(10));
+    dispatch(
+      setActiveInvestigation({
         ...primaryInvestigation,
         query: q,
         status: 'running',
         stages: initialStages
-      }
-    });
+      })
+    );
 
-    // Start background real backend request
     const backendPromise = ctiService.startInvestigation(q);
 
-    // Simulate progressive real-time agent execution pipeline
     let step = 0;
     const interval = setInterval(async () => {
       step++;
@@ -100,59 +100,59 @@ export const useCTIStore = create<CTIState>((set, get) => ({
           return { ...stage, status: 'pending' as const };
         });
 
-        set({
-          currentStageIndex: step,
-          investigationProgress: Math.round(((step + 1) / 9) * 100),
-          activeInvestigation: {
-            ...get().activeInvestigation,
+        dispatch(setCurrentStageIndex(step));
+        dispatch(setInvestigationProgress(Math.round(((step + 1) / 9) * 100)));
+        dispatch(
+          setActiveInvestigation({
+            ...store.getState().investigation.activeInvestigation,
             stages: updatedStages
-          }
-        });
+          })
+        );
       } else {
         clearInterval(interval);
-        // Wait for real backend result
         const realResult = await backendPromise;
-        set({
-          isInvestigating: false,
-          currentStageIndex: 8,
-          investigationProgress: 100,
-          activeInvestigation: realResult
-        });
+        dispatch(setInvestigating(false));
+        dispatch(setCurrentStageIndex(8));
+        dispatch(setInvestigationProgress(100));
+        dispatch(setActiveInvestigation(realResult));
       }
     }, 450);
-  },
+  }, [dispatch]);
 
-  pauseInvestigation: () => set({ isInvestigating: false }),
-  resetInvestigation: () =>
-    set({
-      isInvestigating: false,
-      currentStageIndex: primaryInvestigation.stages.length - 1,
-      investigationProgress: 100,
-      activeInvestigation: primaryInvestigation
-    }),
+  const compositeState: CTIStoreState = useMemo(() => ({
+    theme: ui.theme,
+    setTheme: (t: 'light' | 'dark') => dispatch(setTheme(t)),
+    toggleTheme: () => dispatch(toggleTheme()),
 
-  selectedGraphNode: null,
-  setSelectedGraphNode: (node: GraphNodeData | null) => set({ selectedGraphNode: node }),
-  graphFilterTypes: ['actor', 'malware', 'campaign', 'ip', 'domain', 'cve', 'technique'],
-  toggleGraphFilterType: (type: string) =>
-    set(state => ({
-      graphFilterTypes: state.graphFilterTypes.includes(type)
-        ? state.graphFilterTypes.filter(t => t !== type)
-        : [...state.graphFilterTypes, type]
-    })),
-  minConfidenceFilter: 0,
-  setMinConfidenceFilter: (conf: number) => set({ minConfidenceFilter: conf }),
+    demoModeNotice: ui.demoModeNotice,
+    dismissDemoNotice: () => dispatch(dismissDemoNotice()),
 
-  isSearchOpen: false,
-  setSearchOpen: (open: boolean) => set({ isSearchOpen: open }),
+    activeInvestigation: investigation.activeInvestigation,
+    isInvestigating: investigation.isInvestigating,
+    currentStageIndex: investigation.currentStageIndex,
+    investigationProgress: investigation.investigationProgress,
+    startNewInvestigation,
+    pauseInvestigation: () => dispatch(pauseInvestigation()),
+    resetInvestigation: () => dispatch(resetInvestigation()),
 
-  isNotificationsOpen: false,
-  setNotificationsOpen: (open: boolean) => set({ isNotificationsOpen: open }),
+    selectedGraphNode: graph.selectedGraphNode,
+    setSelectedGraphNode: (n: GraphNodeData | null) => dispatch(setSelectedGraphNode(n)),
+    graphFilterTypes: graph.graphFilterTypes,
+    toggleGraphFilterType: (t: string) => dispatch(toggleGraphFilterType(t)),
+    minConfidenceFilter: graph.minConfidenceFilter,
+    setMinConfidenceFilter: (c: number) => dispatch(setMinConfidenceFilter(c)),
 
-  analystProfile: {
-    name: 'Sarah Vance',
-    role: 'Tier-3 Threat Intel Lead',
-    clearance: 'TOP SECRET // CTI-ORCON',
-    badgeId: 'SOC-9042'
+    isSearchOpen: ui.isSearchOpen,
+    setSearchOpen: (o: boolean) => dispatch(setSearchOpen(o)),
+
+    isNotificationsOpen: ui.isNotificationsOpen,
+    setNotificationsOpen: (o: boolean) => dispatch(setNotificationsOpen(o)),
+
+    analystProfile: ui.analystProfile
+  }), [ui, investigation, graph, dispatch, startNewInvestigation]);
+
+  if (selector) {
+    return selector(compositeState);
   }
-}));
+  return compositeState as unknown as T;
+}

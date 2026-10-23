@@ -7,12 +7,13 @@ import { GlobalSearchModal } from './GlobalSearchModal';
 import { NotificationsDrawer } from './NotificationsDrawer';
 import { DemoBanner } from '../common/DemoBanner';
 import { useCTIStore } from '@/lib/store/cti-store';
+import { ReduxProvider } from '@/lib/store/redux/ReduxProvider';
 
 interface AppShellProps {
   children: React.ReactNode;
 }
 
-export const AppShell: React.FC<AppShellProps> = ({ children }) => {
+const AppShellInner: React.FC<AppShellProps> = ({ children }) => {
   const { theme, setTheme } = useCTIStore();
 
   useEffect(() => {
@@ -53,5 +54,13 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
       <GlobalSearchModal />
       <NotificationsDrawer />
     </div>
+  );
+};
+
+export const AppShell: React.FC<AppShellProps> = ({ children }) => {
+  return (
+    <ReduxProvider>
+      <AppShellInner>{children}</AppShellInner>
+    </ReduxProvider>
   );
 };
