@@ -1,0 +1,127 @@
+{
+  "generatedAt": "2026-10-23T08:49:21Z",
+  "engine": "ACTIP Spark Correlation Pipeline v1.0",
+  "totalEdges": 12,
+  "edges": [
+    {
+      "id": "edge-corr-asn-1",
+      "source": "ioc-1",
+      "target": "ioc-1790266955156",
+      "label": "communicates_with",
+      "confidence": 85,
+      "sourceCount": 3,
+      "verified": true,
+      "correlationReason": "Shared ASN Colocation: AS49870"
+    },
+    {
+      "id": "edge-corr-mal-2",
+      "source": "ioc-1",
+      "target": "ioc-2",
+      "label": "communicates_with",
+      "confidence": 92,
+      "sourceCount": 4,
+      "verified": true,
+      "correlationReason": "Shared Malware Family: blackvenom rat v3.2"
+    },
+    {
+      "id": "edge-corr-mal-3",
+      "source": "ioc-1",
+      "target": "ioc-3",
+      "label": "communicates_with",
+      "confidence": 92,
+      "sourceCount": 4,
+      "verified": true,
+      "correlationReason": "Shared Malware Family: blackvenom rat v3.2"
+    },
+    {
+      "id": "edge-corr-mal-4",
+      "source": "ioc-1",
+      "target": "ioc-1790266955156",
+      "label": "communicates_with",
+      "confidence": 92,
+      "sourceCount": 4,
+      "verified": true,
+      "correlationReason": "Shared Malware Family: blackvenom rat v3.2"
+    },
+    {
+      "id": "edge-corr-mal-5",
+      "source": "ioc-2",
+      "target": "ioc-3",
+      "label": "communicates_with",
+      "confidence": 92,
+      "sourceCount": 4,
+      "verified": true,
+      "correlationReason": "Shared Malware Family: blackvenom rat v3.2"
+    },
+    {
+      "id": "edge-corr-mal-6",
+      "source": "ioc-1790266955156",
+      "target": "ioc-2",
+      "label": "communicates_with",
+      "confidence": 92,
+      "sourceCount": 4,
+      "verified": true,
+      "correlationReason": "Shared Malware Family: blackvenom rat v3.2"
+    },
+    {
+      "id": "edge-corr-mal-7",
+      "source": "ioc-1790266955156",
+      "target": "ioc-3",
+      "label": "communicates_with",
+      "confidence": 92,
+      "sourceCount": 4,
+      "verified": true,
+      "correlationReason": "Shared Malware Family: blackvenom rat v3.2"
+    },
+    {
+      "id": "edge-corr-camp-8",
+      "source": "APT-84 (RedBanshee)",
+      "target": "ioc-1",
+      "label": "uses_infrastructure",
+      "confidence": 88,
+      "sourceCount": 5,
+      "verified": true,
+      "correlationReason": "Attributed via Campaign: Operation Arctic Ghost"
+    },
+    {
+      "id": "edge-corr-camp-9",
+      "source": "APT-84 (RedBanshee)",
+      "target": "ioc-2",
+      "label": "uses_infrastructure",
+      "confidence": 88,
+      "sourceCount": 5,
+      "verified": true,
+      "correlationReason": "Attributed via Campaign: Operation Arctic Ghost"
+    },
+    {
+      "id": "edge-corr-camp-10",
+      "source": "APT-84 (RedBanshee)",
+      "target": "ioc-3",
+      "label": "uses_infrastructure",
+      "confidence": 88,
+      "sourceCount": 5,
+      "verified": true,
+      "correlationReason": "Attributed via Campaign: Operation Arctic Ghost"
+    },
+    {
+      "id": "edge-corr-camp-11",
+      "source": "APT-84 (RedBanshee)",
+      "target": "ioc-1790266955156",
+      "label": "uses_infrastructure",
+      "confidence": 88,
+      "sourceCount": 5,
+      "verified": true,
+      "correlationReason": "Attributed via Campaign: Operation Arctic Ghost"
+    },
+    {
+      "id": "edge-corr-camp-12",
+      "source": "actor-2",
+      "target": "ioc-4",
+      "label": "uses_infrastructure",
+      "confidence": 88,
+      "sourceCount": 5,
+      "verified": true,
+      "correlationReason": "Attributed via Campaign: Campaign Solstice"
+    }
+  ]
+}

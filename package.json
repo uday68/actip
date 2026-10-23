@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "test": "tsx --test tests/search.test.ts tests/reducers.test.ts tests/sightings.test.ts",
-    "search:seed": "tsx src/server/search/seed.ts"
+    "search:seed": "tsx src/server/search/seed.ts",
+    "spark:correlate": "python services/correlation-spark/correlate.py"
   },
   "dependencies": {
     "@elastic/elasticsearch": "^9.4.3",
