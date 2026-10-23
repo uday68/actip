@@ -35,3 +35,31 @@ next-env.d.ts
 # OS generated files
 .DS_Store
 Thumbs.db
+
+# Binaries & C++ artifacts
+*.exe
+*.obj
+*.o
+*.dll
+*.so
+*.dylib
+*.pdb
+engine_cpp/actip_engine.exe
+
+# Python artifacts
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+services/python/__pycache__/
+.pytest_cache/
+.venv/
+env/
+
+# Java & Gradle artifacts
+.gradle/
+services/ingestion-java/.gradle/
+services/ingestion-java/build/
+*.class
+*.jar
+*.war
