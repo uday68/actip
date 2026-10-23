@@ -23,12 +23,14 @@ public class IngestionPipeline {
     private final ObjectMapper objectMapper;
     private final ElasticsearchBulkIndexer indexer;
     private final KafkaEventProducer kafkaProducer;
+    private final CassandraSightingsWriter sightingsWriter;
 
     public IngestionPipeline(IngestionConfig config) {
         this.config = config;
         this.objectMapper = new ObjectMapper();
         this.indexer = new ElasticsearchBulkIndexer(config);
         this.kafkaProducer = new KafkaEventProducer(config);
+        this.sightingsWriter = new CassandraSightingsWriter(config);
     }
 
     public void run() {
@@ -70,6 +72,7 @@ public class IngestionPipeline {
 
         log.info("ACTIP Ingestion Pipeline finished. Total normalized indicators processed: {}", totalCount);
         kafkaProducer.close();
+        sightingsWriter.close();
     }
 
     private int ingestFeed(File feedFile, com.actip.ingestion.normalizer.IndicatorNormalizer normalizer, boolean esAvailable) {
@@ -91,6 +94,7 @@ public class IngestionPipeline {
             for (NormalizedIndicator ind : indicators) {
                 currentBatch.add(ind);
                 kafkaProducer.publish(ind);
+                sightingsWriter.recordSighting(ind);
 
                 if (currentBatch.size() >= batchSize) {
                     if (esAvailable) {

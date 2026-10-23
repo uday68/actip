@@ -7,13 +7,14 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "tsx --test tests/search.test.ts tests/reducers.test.ts",
+    "test": "tsx --test tests/search.test.ts tests/reducers.test.ts tests/sightings.test.ts",
     "search:seed": "tsx src/server/search/seed.ts"
   },
   "dependencies": {
     "@elastic/elasticsearch": "^9.4.3",
     "@reduxjs/toolkit": "^2.13.0",
     "@xyflow/react": "^12.3.6",
+    "cassandra-driver": "^4.10.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.454.0",
     "next": "14.2.18",
