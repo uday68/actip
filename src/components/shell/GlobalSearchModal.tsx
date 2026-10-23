@@ -31,9 +31,11 @@ export const GlobalSearchModal: React.FC = () => {
   useEffect(() => {
     if (isSearchOpen) {
       setTimeout(() => inputRef.current?.focus(), 50);
-      ctiService.globalSearch(query).then(setResults);
+      if (query.trim()) {
+        ctiService.globalSearch(query).then(setResults);
+      }
     }
-  }, [isSearchOpen]);
+  }, [isSearchOpen, query]);
 
   const handleSearch = async (val: string) => {
     setQuery(val);
@@ -138,13 +140,27 @@ export const GlobalSearchModal: React.FC = () => {
                         onClick={() => handleSelect(item.url)}
                         className="w-full text-left px-3 py-2 rounded bg-[#111726]/70 hover:bg-[#182238] border border-transparent hover:border-[#2a3c61] flex items-center justify-between group transition-colors"
                       >
-                        <div>
-                          <div className="text-xs font-mono font-semibold text-slate-200 group-hover:text-sky-300">
-                            {item.title}
+                        <div className="flex-1 pr-2">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-mono font-semibold text-slate-200 group-hover:text-sky-300">
+                              {item.title}
+                            </span>
+                            {item.score && (
+                              <span className="text-[10px] font-mono text-slate-400 bg-slate-800/80 px-1.5 py-0.2 rounded border border-slate-700/50">
+                                score: {item.score.toFixed(1)}
+                              </span>
+                            )}
                           </div>
-                          <div className="text-[11px] text-slate-400 truncate max-w-lg">
-                            {item.subtitle}
-                          </div>
+                          {item.highlightHtml ? (
+                            <div
+                              className="text-[11px] text-slate-300 font-mono mt-0.5"
+                              dangerouslySetInnerHTML={{ __html: item.highlightHtml }}
+                            />
+                          ) : (
+                            <div className="text-[11px] text-slate-400 truncate max-w-lg mt-0.5">
+                              {item.subtitle}
+                            </div>
+                          )}
                         </div>
                         <ArrowRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-sky-400 transition-transform group-hover:translate-x-0.5 shrink-0" />
                       </button>

@@ -13,12 +13,14 @@ import { GraphNodeItem } from '@/lib/mock-data/graph';
 import { primaryInvestigation } from '@/lib/mock-data/investigations';
 
 export interface GlobalSearchResult {
-  category: 'Threat Actors' | 'Malware' | 'Campaigns' | 'Infrastructure' | 'Vulnerabilities' | 'Techniques' | 'Reports';
+  category: 'Threat Actors' | 'Malware' | 'Campaigns' | 'Infrastructure' | 'Vulnerabilities' | 'Techniques' | 'Reports' | 'Evidence';
   id: string;
   title: string;
   subtitle: string;
   severity?: string;
   url: string;
+  highlightHtml?: string;
+  score?: number;
 }
 
 export const ctiService = {
@@ -250,6 +252,35 @@ export const ctiService = {
 
   async globalSearch(query: string): Promise<GlobalSearchResult[]> {
     if (!query.trim()) return [];
+
+    try {
+      const res = await fetch(`/api/search?q=${encodeURIComponent(query)}&limit=25`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && Array.isArray(data.hits)) {
+          return data.hits.map((hit: any) => {
+            const firstHighlightKey = hit.highlight ? Object.keys(hit.highlight)[0] : null;
+            const highlightSnippet = firstHighlightKey && hit.highlight[firstHighlightKey]?.length
+              ? hit.highlight[firstHighlightKey][0]
+              : undefined;
+
+            return {
+              category: hit.category || 'Threat Actors',
+              id: hit.id,
+              title: hit.title,
+              subtitle: hit.subtitle,
+              severity: hit.severity,
+              url: hit.url,
+              highlightHtml: highlightSnippet,
+              score: hit.score
+            };
+          });
+        }
+      }
+    } catch (err) {
+      console.warn('API search failed, falling back to client-side matching:', err);
+    }
+
     const q = query.toLowerCase();
     const results: GlobalSearchResult[] = [];
 
